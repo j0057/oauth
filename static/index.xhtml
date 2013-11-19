@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <title>Fun with oAuth</title>
+        <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"/> 
         <script src="funwithoauth.js"></script>
         <style>
             #linkbag a { display: block; }
@@ -33,6 +34,10 @@
             <li>
                 <a id="github_followers" href="/oauth/github/api/user/followers">https://api.github.com/user/followers</a>
                 <div id="github_followers_result"/>
+            </li>
+            <li>
+                <a id="github_repos" href="/oauth/github/api/user/repos">https://api.github.com/user/repos</a>
+                <div id="github_repos_result"/>
             </li>
         </ul>
 
@@ -123,6 +128,10 @@
             <li>
                 <a class="authorize" href="/oauth/j0057-todo/init/">authorize</a>
             </li>
+            <li>
+                <a id="j0057_todo_me" href="/oauth/j0057-todo/api/me">http://dev2.j0057.nl/todo/me</a>
+                <div id="j0057_todo_me_result"/>
+            </li>
         </ul>
 
         <h2>Links</h2>
@@ -177,6 +186,9 @@
             </li>
             <li>
                 <a href="https://www.dropbox.com/developers/core/docs">Dropbox Core API docs</a>
+            </li>
+            <li>
+                <a href="https://ssl.reddit.com/prefs/apps">Reddit manage apps</a>
             </li>
         </ul>
     </body>

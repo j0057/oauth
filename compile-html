@@ -1,0 +1,58 @@
+#!/usr/bin/env python2.7
+
+import sys
+import lxml.etree
+
+ns = { 'x': 'http://www.w3.org/1999/xhtml' }
+
+def read_doc(fn):
+    print 'Reading XHTML:', fn
+    with open(fn, 'r') as f:
+        return lxml.etree.parse(f)
+
+def inline_scripts(doc):
+    for script in doc.xpath('//x:script', namespaces=ns):
+        src = script.attrib['src']
+        print 'Inlining script:', src
+        with open(src, 'r') as f:
+            #script.text = '\n' + f.read()
+            script.text = lxml.etree.CDATA('\n' + f.read())
+        del script.attrib['src']
+
+def inline_stylesheets(doc):
+    for link in doc.xpath('//x:link[@rel="stylesheet"]', namespaces=ns):
+        href = link.attrib['href']
+        print 'Inlining stylesheet:', href
+        parent = link.getparent()
+        parent.remove(link)
+        style = lxml.etree.Element('style') 
+        with open(href, 'r') as f:
+            style.text = '\n' + f.read()
+        parent.append(style)
+
+def inline_images(doc):
+    for img in doc.xpath('//x:img', namespaces=ns):
+        src = img.attrib['src']
+        print 'Inlining image:', src
+        if src.endswith('.png'):
+            with open(src, 'r') as f:
+                img.attrib['src'] = 'data:image/png;base64,' + f.read().encode('base64').replace('\n','')
+
+def write_doc(fn, doc):
+    print 'Post-processing script tags'
+    xhtml = lxml.etree.tostring(doc)
+    xhtml = xhtml.replace('<script><![CDATA[',
+                          '<script>//<![CDATA[')
+    xhtml = xhtml.replace(']]></script>',
+                          '//]]></script>')
+    print 'Writing XHTML:', fn
+    with open(fn, 'w') as f:
+        f.write(xhtml)
+
+if __name__ == '__main__':
+    source, target = sys.argv[1:3]
+    doc = read_doc(source)
+    inline_scripts(doc)
+    inline_stylesheets(doc)
+    inline_images(doc)
+    write_doc(target, doc)

@@ -1,8 +1,12 @@
 import json
 import os
 import re
-import urlparse
 import urllib
+
+try:
+    import urlparse as urlparse
+except ImportError:
+    import urllib.parse as urlparse
 
 import requests
 
@@ -25,24 +29,13 @@ def random(n=57):
 # keys come from configuration/environment
 #
 
-def load_keys(name):
-    client_id     = '{0}_CLIENT_ID'.format(name)
-    client_secret = '{0}_CLIENT_SECRET'.format(name)
-    keys = {
-        client_id    : os.environ.get(client_id, ''),
-        client_secret: os.environ.get(client_secret, '') 
-    }
-    globals().update(keys)
-    print keys
-        
-load_keys('GITHUB')
-load_keys('FACEBOOK')
-load_keys('LIVE')
-load_keys('GOOGLE')
-load_keys('DROPBOX')
-load_keys('LINKEDIN')
-load_keys('REDDIT')
-load_keys('J0057_TODO')
+def load_keys():
+    keys_json_filename = os.environ.get('OAUTH_KEYS', 'keys.json')
+    with open(keys_json_filename, 'r') as keys_json:
+        keys = json.load(keys_json)
+        globals().update(keys)
+
+load_keys()
 
 #
 # utility functions
@@ -50,19 +43,19 @@ load_keys('J0057_TODO')
 
 def print_exchange(r):
     print
-    print '>', r.request.method, r.request.url
+    print '>', r.request.method, r.request.url 
     for k in sorted(k.title() for k in r.request.headers.keys()):
         print '>', k.title(), ':', r.request.headers[k] 
-    print '>'
-    print '>', r.request.body
-    print
-    print '<', r.status_code, r.reason
+    print '>' 
+    print '>', r.request.body 
+    print  
+    print '<', r.status_code, r.reason 
     for k in sorted(k.title() for k in r.headers.keys()):
-        print '<', k.title(), ':', r.headers[k]
-    print '<'
+        print '<', k.title(), ':', r.headers[k] 
+    print '<' 
     for line in re.split(r'[\r\n]+', r.text):
-        print '<', line
-    print
+        print '<', line 
+    print  
 
 def split_mime_header(header_val):
     parts = re.split(r';\s*', header_val)
@@ -71,18 +64,118 @@ def split_mime_header(header_val):
     return value, attrs
 
 #
+# Class variables
+#
+
+class Github(object):
+    key_fmt       = 'github_{0}'
+
+    client_id     = GITHUB_CLIENT_ID
+    client_secret = GITHUB_CLIENT_SECRET
+
+    authorize_uri = 'https://github.com/login/oauth/authorize'
+    token_uri     = 'https://github.com/login/oauth/access_token'
+    api_base_uri  = 'https://api.github.com/'
+
+    callback_uri  = 'https://dev.j0057.nl/oauth/github/code/'
+    redirect_uri  = 'https://dev.j0057.nl/oauth/index.xhtml'
+
+class Facebook(object):
+    key_fmt       = 'facebook_{0}'
+    
+    client_id     = FACEBOOK_CLIENT_ID
+    client_secret = FACEBOOK_CLIENT_SECRET
+    
+    authorize_uri = 'https://www.facebook.com/dialog/oauth'
+    token_uri     = 'https://graph.facebook.com/oauth/access_token'
+    api_base_uri  = 'https://graph.facebook.com/'
+
+    callback_uri  = 'https://dev.j0057.nl/oauth/facebook/code/'
+    redirect_uri  = 'https://dev.j0057.nl/oauth/index.xhtml'
+    
+class Live(object):
+    key_fmt       = 'live_{0}'
+    
+    client_id     = LIVE_CLIENT_ID
+    client_secret = LIVE_CLIENT_SECRET
+    
+    authorize_uri = 'https://login.live.com/oauth20_authorize.srf'
+    token_uri     = 'https://login.live.com/oauth20_token.srf'
+    api_base_uri  = 'https://apis.live.net/v5.0/'
+
+    callback_uri  = 'https://dev.j0057.nl/oauth/live/code/'
+    redirect_uri  = 'https://dev.j0057.nl/oauth/index.xhtml'
+
+class Google(object):
+    key_fmt       = 'google_{0}'
+
+    client_id     = GOOGLE_CLIENT_ID
+    client_secret = GOOGLE_CLIENT_SECRET
+
+    authorize_uri = 'https://accounts.google.com/o/oauth2/auth'
+    token_uri     = 'https://accounts.google.com/o/oauth2/token'
+    api_base_uri  = 'https://www.googleapis.com/'
+
+    callback_uri  = 'https://dev.j0057.nl/oauth/google/code/'
+    redirect_uri  = 'https://dev.j0057.nl/oauth/index.xhtml'
+
+class Dropbox(object):
+    key_fmt       = 'dropbox_{0}'
+
+    client_id     = DROPBOX_CLIENT_ID
+    client_secret = DROPBOX_CLIENT_SECRET
+
+    authorize_uri = 'https://www.dropbox.com/1/oauth2/authorize'
+    token_uri     = 'https://api.dropbox.com/1/oauth2/token'
+    api_base_uri  = 'https://api.dropbox.com/'
+
+    callback_uri  = 'https://dev.j0057.nl/oauth/dropbox/code/'
+    redirect_uri  = 'https://dev.j0057.nl/oauth/index.xhtml'
+
+class Linkedin(object):
+    key_fmt       = 'linkedin_{0}'
+
+    client_id     = LINKEDIN_CLIENT_ID
+    client_secret = LINKEDIN_CLIENT_SECRET
+
+    authorize_uri = 'https://www.linkedin.com/uas/oauth2/authorization'
+    token_uri     = 'https://www.linkedin.com/uas/oauth2/accessToken'
+    api_base_uri  = 'https://api.linkedin.com/'
+
+    callback_uri  = 'https://dev.j0057.nl/oauth/linkedin/code/'
+    redirect_uri  = 'https://dev.j0057.nl/oauth/index.xhtml'
+
+class Reddit(object):
+    key_fmt       = 'reddit_{0}'
+
+    client_id     = REDDIT_CLIENT_ID
+    client_secret = REDDIT_CLIENT_SECRET
+
+    authorize_uri = 'https://ssl.reddit.com/api/v1/authorize'
+    token_uri     = 'https://ssl.reddit.com/api/v1/access_token'
+    api_base_uri  = 'https://oauth.reddit.com/'
+
+    callback_uri  = 'https://dev.j0057.nl/oauth/reddit/code/'
+    redirect_uri  = 'https://dev.j0057.nl/oauth/index.xhtml'
+
+class J0057Todo(object):
+    key_fmt       = 'j0057_todo_{0}'
+
+    client_id     = J0057_TODO_CLIENT_ID
+    client_secret = J0057_TODO_CLIENT_SECRET
+
+    authorize_uri = 'http://dev2.j0057.nl/todo/authorize/'
+    token_uri     = 'http://dev2.j0057.nl/todo/access_token/'
+    api_base_uri  = 'http://dev2.j0057.nl/todo/'
+
+    callback_uri  = 'https://dev.j0057.nl/oauth/j0057-todo/code/'
+    redirect_uri  = 'https://dev.j0057.nl/oauth/index.xhtml'
+
+#
 # OauthInit
 #
 
 class OauthInit(xhttp.Resource):
-    def __init__(self, key_fmt, client_id, client_secret, authorize_uri, callback_uri):
-        super(OauthInit, self).__init__()
-        self.key_fmt = key_fmt 
-        self.client_id = client_id
-        self.client_secret = client_secret
-        self.authorize_uri = authorize_uri
-        self.callback_uri = callback_uri
-
     def get_scope(self, request):
         return request['x-get']['scope'] or ''
 
@@ -91,84 +184,48 @@ class OauthInit(xhttp.Resource):
     @xhttp.get({ 'scope?': '.+', 'session_id*': '.*' })
     def GET(self, request):
         request['x-session'][self.key_fmt.format('nonce')] = nonce = random()
+        authorize_uri = self.authorize_uri + '?' + urllib.urlencode({
+            'client_id': self.client_id,
+            'redirect_uri': self.callback_uri,
+            'scope': self.get_scope(request),
+            'state': nonce,
+            'response_type': 'code' })
         return {
             'x-status': xhttp.status.SEE_OTHER,
-            'location': self.authorize_uri + '?' + urllib.urlencode({
-                'client_id': self.client_id,
-                'redirect_uri': self.callback_uri,
-                'scope': self.get_scope(request),
-                'state': nonce,
-                'response_type': 'code' })
-        }
+            'location': authorize_uri }
 
-class GithubInit(OauthInit):
-    def __init__(self):
-        super(GithubInit, self).__init__('github_{0}', GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET,
-                                         'https://github.com/login/oauth/authorize',
-                                         'https://dev.j0057.nl/oauth/github/code/')
+class GithubInit(OauthInit, Github):
+    pass
 
-class FacebookInit(OauthInit):
-    def __init__(self):
-        super(FacebookInit, self).__init__('facebook_{0}', FACEBOOK_CLIENT_ID, FACEBOOK_CLIENT_SECRET,
-                                           'https://www.facebook.com/dialog/oauth',
-                                           'https://dev.j0057.nl/oauth/facebook/code/')
+class FacebookInit(OauthInit, Facebook):
+    pass
 
-class LiveInit(OauthInit):
-    def __init__(self):
-        super(LiveInit, self).__init__('live_{0}', LIVE_CLIENT_ID, LIVE_CLIENT_SECRET,
-                                       'https://login.live.com/oauth20_authorize.srf',
-                                       'https://dev.j0057.nl/oauth/live/code/')
+class LiveInit(OauthInit, Live):
+    pass
 
-class GoogleInit(OauthInit):
-    def __init__(self):
-        super(GoogleInit, self).__init__('google_{0}', GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET,
-                                         'https://accounts.google.com/o/oauth2/auth',
-                                         'https://dev.j0057.nl/oauth/google/code/')
-
+class GoogleInit(OauthInit, Google):
     def get_scope(self, request):
         scopes = request['x-get']['scope'] or ''
         return ' '.join(scope if scope in ['openid', 'email'] else 'https://www.googleapis.com/auth/' + scope
                         for scope in scopes.split())
 
-class DropboxInit(OauthInit):
-    def __init__(self):
-        super(DropboxInit, self).__init__('dropbox_{0}', DROPBOX_CLIENT_ID, DROPBOX_CLIENT_SECRET,
-                                          'https://www.dropbox.com/1/oauth2/authorize',
-                                          'https://dev.j0057.nl/oauth/dropbox/code/')
+class DropboxInit(OauthInit, Dropbox):
+    pass
 
-class LinkedinInit(OauthInit):
-    def __init__(self):
-        super(LinkedinInit, self).__init__('linkedin_{0}', LINKEDIN_CLIENT_ID, LINKEDIN_CLIENT_SECRET,
-                                           'https://www.linkedin.com/uas/oauth2/authorization',
-                                           'https://dev.j0057.nl/oauth/linkedin/code/')
+class LinkedinInit(OauthInit, Linkedin):
+    pass
 
-class RedditInit(OauthInit):
-    def __init__(self):
-        super(RedditInit, self).__init__('reddit_{0}', REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET,
-                                         'https://ssl.reddit.com/api/v1/authorize',
-                                         'https://dev.j0057.nl/oauth/reddit/code/')
+class RedditInit(OauthInit, Reddit):
+    pass
 
-class J0057TodoInit(OauthInit):
-    def __init__(self):
-        super(J0057TodoInit, self).__init__('j0057_todo_{0}',
-                                            J0057_TODO_CLIENT_ID, J0057_TODO_CLIENT_SECRET,
-                                            'http://dev2.j0057.nl/todo/authorize/',
-                                            'https://dev.j0057.nl/oauth/j0057-todo/code/')
+class J0057TodoInit(OauthInit, J0057Todo):
+    pass
 
 #
 # OauthCode
 #
 
 class OauthCode(xhttp.Resource):
-    def __init__(self, key_fmt, client_id, client_secret, token_uri, callback_uri, redirect_uri):
-        super(OauthCode, self).__init__()
-        self.key_fmt = key_fmt 
-        self.client_id = client_id
-        self.client_secret = client_secret
-        self.token_uri = token_uri
-        self.callback_uri = callback_uri
-        self.redirect_uri = redirect_uri
-
     def get_form(self, code):
         return {
             'client_id': self.client_id,
@@ -187,24 +244,25 @@ class OauthCode(xhttp.Resource):
     def get_authorization(self):
         return {}
 
-    def get_token(self, code):
-        r = requests.post(self.token_uri, data=self.get_form(code), headers=self.get_headers())
-
-        print_exchange(r)
-
-        if r.status_code != 200:
-            raise xhttp.HTTPException(xhttp.status.BAD_REQUEST, { 'x-detail': r.text.encode('utf8') })
-
-        content_type, _ = split_mime_header(r.headers['content-type'])
+    def parse_token(self, response, content_type):
         if content_type == 'application/json':
-            data = r.json()
-            return data['access_token']
-        elif content_type == 'application/x-www-form-urlencoded' or content_type == 'text/plain':
-            data = urlparse.parse_qs(r.content)
-            return data['access_token'][0]
-        else:
-            raise xhttp.HTTPException(xhttp.status.NOT_IMPLEMENTED, { 
+            json = response.json()
+            return json['access_token']
+
+    def request_token(self, code):
+        # post request for getting access token
+        response = requests.post(self.token_uri, data=self.get_form(code), headers=self.get_headers())
+        print_exchange(response)
+        if response.status_code != 200:
+            raise xhttp.HTTPException(xhttp.status.BAD_REQUEST, { 'x-detail': response.text.encode('utf8') })
+
+        # get access code from response
+        content_type, _ = split_mime_header(response.headers['content-type'])
+        access_token = self.parse_token(response, content_type)
+        if not access_token:
+            raise xhttp.HTTPException(xhttp.status.NOT_IMPLEMENTED, {
                 'x-detail': "Don't know how to handle content type {0}".format(content_type) })
+        return access_token
 
     @xhttp.get({ 'code': r'^.+$', 'state': r'^[-_0-9a-zA-Z]+$',
                  'authuser?': '.*', 'prompt?': '.*', 'session_state?': '.*' })
@@ -213,83 +271,50 @@ class OauthCode(xhttp.Resource):
     def GET(self, request):
         if request['x-get']['state'] != request['x-session'].pop(self.key_fmt.format('nonce')):
             raise xhttp.HTTPException(xhttp.BAD_REQUEST, { 'x-detail': 'Bad state {0}'.format(state) })
-        request['x-session'][self.key_fmt.format('token')] = self.get_token(request['x-get']['code'])
+        request['x-session'][self.key_fmt.format('token')] = self.request_token(request['x-get']['code'])
         return { 
             'x-status': xhttp.status.SEE_OTHER,
             'location': self.redirect_uri
         }
 
-class GithubCode(OauthCode):
-    def __init__(self):
-        super(GithubCode, self).__init__('github_{0}', GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET,
-                                         'https://github.com/login/oauth/access_token',
-                                         'https://dev.j0057.nl/oauth/github/code/',
-                                         'https://dev.j0057.nl/oauth/index.xhtml')
+class GithubCode(OauthCode, Github):
+    pass
 
-class FacebookCode(OauthCode):
-    def __init__(self):
-        super(FacebookCode, self).__init__('facebook_{0}', FACEBOOK_CLIENT_ID, FACEBOOK_CLIENT_SECRET,
-                                           'https://graph.facebook.com/oauth/access_token',
-                                           'https://dev.j0057.nl/oauth/facebook/code/',
-                                           'https://dev.j0057.nl/oauth/index.xhtml')
+class FacebookCode(OauthCode, Facebook):
+    def parse_token(self, response, content_type):
+        if content_type in ['application/x-www-form-urlencoded', 'text/plain']:
+            form = urlparse.parse_qs(response.content)
+            return form['access_token'][0]
+        else:
+            return super(FacebookCode, self).parse_token(response, content_type)
 
-class LiveCode(OauthCode):
-    def __init__(self):
-        super(LiveCode, self).__init__('live_{0}', LIVE_CLIENT_ID, LIVE_CLIENT_SECRET,
-                                       'https://login.live.com/oauth20_token.srf',
-                                       'https://dev.j0057.nl/oauth/live/code/',
-                                       'https://dev.j0057.nl/oauth/index.xhtml')
+class LiveCode(OauthCode, Live):
+    pass
+
+class GoogleCode(OauthCode, Google):
+    pass
+
+class DropboxCode(OauthCode, Dropbox):
+    pass
+
+class LinkedinCode(OauthCode, Linkedin):
+    pass
                                            
-class GoogleCode(OauthCode):
-    def __init__(self):
-        super(GoogleCode, self).__init__('google_{0}', GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET,
-                                         'https://accounts.google.com/o/oauth2/token',
-                                         'https://dev.j0057.nl/oauth/google/code/',
-                                         'https://dev.j0057.nl/oauth/index.xhtml')
-
-class DropboxCode(OauthCode):
-    def __init__(self):
-        super(DropboxCode, self).__init__('dropbox_{0}', DROPBOX_CLIENT_ID, DROPBOX_CLIENT_SECRET,
-                                           'https://api.dropbox.com/1/oauth2/token',
-                                           'https://dev.j0057.nl/oauth/dropbox/code/',
-                                           'https://dev.j0057.nl/oauth/index.xhtml')
-
-class LinkedinCode(OauthCode):
-    def __init__(self):
-        super(LinkedinCode, self).__init__('linkedin_{0}', LINKEDIN_CLIENT_ID, LINKEDIN_CLIENT_SECRET,
-                                           'https://www.linkedin.com/uas/oauth2/accessToken',
-                                           'https://dev.j0057.nl/oauth/linkedin/code/',
-                                           'https://dev.j0057.nl/oauth/index.xhtml')
-                                           
-class RedditCode(OauthCode):
-    def __init__(self):
-        super(RedditCode, self).__init__('reddit_{0}', REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET,
-                                         'https://ssl.reddit.com/api/v1/access_token',
-                                         'https://dev.j0057.nl/oauth/reddit/code/',
-                                         'https://dev.j0057.nl/oauth/index.xhtml')
-
+class RedditCode(OauthCode, Reddit):
     def get_authorization(self):
         auth = 'Basic ' + '{0}:{1}'.format(self.client_id, self.client_secret).encode('base64')[:-1]
         return { 'authorization': auth }
 
-class J0057TodoCode(OauthCode):
-    def __init__(self):
-        super(J0057TodoCode, self).__init__('j0057_todo_{0}',
-                                            J0057_TODO_CLIENT_ID, J0057_TODO_CLIENT_SECRET,
-                                            'http://dev2.j0057.nl/todo/access_token/',
-                                            'https://dev.j0057.nl/oauth/j0057-todo/code/',
-                                            'https://dev.j0057.nl/oauth/index.xhtml')
+class J0057TodoCode(OauthCode, J0057Todo):
+    pass
 
 #
 # OauthApi
 #
 
 class OauthApi(xhttp.Resource):
-    def __init__(self, key_fmt, base_uri, access_token=None):
-        super(OauthApi, self).__init__()
-        self.key_fmt = key_fmt
-        self.base_uri = base_uri
-        self.access_token = access_token
+    def set_token(self, headers, params, token):
+        headers.update({ 'authorization': 'Bearer {0}'.format(token) })
 
     @xhttp.cookie({ 'session_id': '^(.+)$' })
     @xhttp.session('session_id', SESSIONS)
@@ -297,52 +322,43 @@ class OauthApi(xhttp.Resource):
         token = request['x-session'].get(self.key_fmt.format('token'), '')
         params = { k: v[0] for (k, v) in urlparse.parse_qs(request['x-query-string']).items() }
         headers = { 'accept': 'application/json' }
-        if self.access_token:
-            params.update({ self.access_token: token })
-        else:
-            headers.update({ 'authorization': 'Bearer {0}'.format(token) })
-        response = requests.get(self.base_uri + path, params=params, headers=headers)
+        self.set_token(headers, params, token)
+        response = requests.get(self.api_base_uri + path, params=params, headers=headers)
         print_exchange(response)
         return {
             'x-status': response.status_code,
             'content-type': response.headers['content-type'],
             'x-content': response.content }
 
-class GithubApi(OauthApi):
-    def __init__(self):
-        super(GithubApi, self).__init__('github_{0}', 'https://api.github.com/')
+class GithubApi(OauthApi, Github):
+    pass
 
-class FacebookApi(OauthApi):
-    def __init__(self):
-        super(FacebookApi, self).__init__('facebook_{0}', 'https://graph.facebook.com/')
+class FacebookApi(OauthApi, Facebook):
+    pass
 
-class LiveApi(OauthApi):
-    def __init__(self):
-        super(LiveApi, self).__init__('live_{0}', 'https://apis.live.net/v5.0/')
+class LiveApi(OauthApi, Live):
+    pass
 
-class GoogleApi(OauthApi):
-    def __init__(self):
-        super(GoogleApi, self).__init__('google_{0}', 'https://www.googleapis.com/')
+class GoogleApi(OauthApi, Google):
+    pass
 
-class DropboxApi(OauthApi):
-    def __init__(self):
-        super(DropboxApi, self).__init__('dropbox_{0}', 'https://api.dropbox.com/')
-        
-    def GET(self, request, path): # FIXME: path gets unquoted by xhttp ... 
+class DropboxApi(OauthApi, Dropbox):
+    def GET(self, request, path): 
         path = '/'.join(urllib.quote(part) for part in path.split('/'))
         return super(DropboxApi, self).GET(request, path)
         
-class DropboxContentApi(OauthApi):
-    def __init__(self):
-        super(DropboxContentApi, self).__init__('dropbox_{0}', 'https://api-content.dropbox.com/')
+class DropboxContentApi(OauthApi, Dropbox):
+    api_base_uri = 'https://api-content.dropbox.com'
 
-class LinkedinApi(OauthApi):
-    def __init__(self):
-        super(LinkedinApi, self).__init__('linkedin_{0}', 'https://api.linkedin.com/', 'oauth2_access_token')
+class LinkedinApi(OauthApi, Linkedin):
+    def set_token(self, headers, params, token):
+        params.update({ 'oauth2_access_token': token })
 
-class RedditApi(OauthApi):
-    def __init__(self):
-        super(RedditApi, self).__init__('reddit_{0}', 'https://oauth.reddit.com/')
+class RedditApi(OauthApi, Reddit):
+    pass
+
+class J0057TodoApi(OauthApi, J0057Todo):
+    pass
 
 #
 # Sessions
@@ -389,7 +405,7 @@ class SessionCheck(xhttp.Resource):
             return {
                 'x-status': xhttp.status.OK,
                 'x-content': json.dumps({
-                    'session': bool(session),
+                    'session': session_id in SESSIONS,
                     'tokens': {
                         'github': 'github_token' in session,
                         'facebook': 'facebook_token' in session,
@@ -398,7 +414,8 @@ class SessionCheck(xhttp.Resource):
                         'dropbox': 'dropbox_token' in session,
                         'linkedin': 'linkedin_token' in session,
                         'reddit': 'reddit_token' in session,
-                    }
+                    },
+                    'request': { k: str(v) for (k, v) in request.items() }
                 }),
                 'content-type': 'application/json'
             }
@@ -412,9 +429,12 @@ class OauthRouter(xhttp.Router):
         super(OauthRouter, self).__init__(
             (r'^/$',                            xhttp.Redirector('/oauth/')),
             (r'^/oauth/$',                      xhttp.Redirector('index.xhtml')),
+            (r'^/oauth/pizza/$',                xhttp.Redirector('index.xhtml')),
             
-            (r'^/oauth/(.*\.xhtml)$',           xhttp.FileServer('static', 'application/xhtml+xml')),
+            (r'^/oauth/(.*\.xhtml)$',           xhttp.FileServer('static', 'application/xhtml+xml; charset=UTF-8')),
             (r'^/oauth/(.*\.js)$',              xhttp.FileServer('static', 'application/javascript')),
+            (r'^/oauth/(.*\.png)$',             xhttp.FileServer('static', 'image/png')),
+            (r'^/oauth/(.*\.css)$',             xhttp.FileServer('static', 'text/css')),
             
             (r'^/oauth/google/init/$',          GoogleInit()),
             (r'^/oauth/google/code/$',          GoogleCode()),
@@ -448,6 +468,7 @@ class OauthRouter(xhttp.Router):
 
             (r'^/oauth/j0057-todo/init/$',      J0057TodoInit()),
             (r'^/oauth/j0057-todo/code/$',      J0057TodoCode()),
+            (r'^/oauth/j0057-todo/api/(.*)$',   J0057TodoApi()),
             
             (r'^/oauth/session/start/$',        SessionStart()),
             (r'^/oauth/session/delete/$',       SessionDelete()),

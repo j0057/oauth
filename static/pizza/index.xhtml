@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>OAuth2</title>
+        <link rel="stylesheet" href="index.css"/>
+        <script src="index.js"></script>
+    </head>
+
+    <body>
+
+        <div class="slide">
+        </div>
+
+        <div class="slide" id="slide-title" data-states="1">
+            <h1 class="centered">Fun with OAuth</h1>
+
+            <div class="centered">
+                <img src="schoolmaster.png"/>
+            </div>
+
+            <h6 class="centered">Joost Molenaar, 2013-11-05</h6>
+
+            <div class="centered" style="position: absolute; bottom: 1em; width: 100%;">
+                <h6>Powered by</h6>
+                <img src="html5.png"/>
+                <img src="pompeï.png" class="hidden" id="title-pizza"/>
+                <img src="css3.png"/> 
+            </div>
+        </div>
+
+        <div class="slide">
+            <h1>In this episode</h1>
+            <img src="oauth2.png"
+                 style="position: absolute; right: 0"/>
+            <ul>
+                <li>Wie &amp; wat</li>
+                <li>Rollen</li>
+                <li>Flows</li>
+                <li>Tokens</li>
+                <li>Authorization code flow</li>
+                <li>POC's</li>
+                <li>Python</li>
+                <li>Demo</li>
+                <li>Code</li>
+                <li>Toepassingen voor SchoolMaster</li>
+                <li>Specs / Further Reading</li>
+            </ul>
+        </div>
+
+        <div class="slide" id="slide-wie-wat" data-states="7">
+            <h1>Wie &amp; wat</h1>
+            <ul>
+                <li>OAuth1: Twitter, Flickr, Bitbucket, Discogs, Tumblr, Vimeo, ...</li>
+                <li>OAuth2: Facebook, Google, LinkedIn, Microsoft, Dropbox, Instagram, PayPal, Foursquare, Reddit, bit.ly, SoundCloud, ...</li>
+                <li>
+                    Gebruiker autoriseert derde partij om API aan te roepen
+                    <ul>
+                        <li>Zonder wachtwoord aan derde partij te geven</li>
+                        <li>Zonder wachtwoord bij derde partij te bewaren</li>
+                        <li>Derde partij kan niet de hele API aanroepen</li>
+                        <li>Gebruiker kan autorisatie weer intrekken</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="slide" id="slide-rollen" data-states="4">
+            <h1>Rollen</h1>
+            <ul>
+                <li>Resource owner / End-User</li>
+                <li>Client</li>
+                <li>Authorization Server</li>                
+                <li>Resource Server</li>
+            </ul>
+        </div>
+
+        <div class="slide" id="slide-flows" data-states="4">
+            <h1>Flows</h1>
+            <ul>
+                <li>Authorization Code Flow<br/>
+                Voor web apps (response_type=code)</li>
+                <li>Implicit Flow<br/>
+                Voor browser apps en mobile apps (response_type=token)</li>
+                <li>Resource Owner Password Credentials Flow<br/>
+                Voor mobile of desktop apps (grant_type=password)</li>
+                <li>Client Credentials Flow<br/>
+                Voor client zelf (grant_type=client_credentials)</li>
+            </ul>
+        </div>
+
+        <div class="slide" id="slide-tokens" data-states="3">
+            <h1>Tokens</h1>
+            <ul>  
+                <li>Authorization Code</li>
+                <li>Access Token</li>
+                <li>Refresh Token</li>
+            </ul>
+        </div>
+
+        <div class="slide" id="slide-controversieel" data-states="7">
+            <h1>Controversieel</h1>
+            <ul>
+                <li>OAuth 1.0 is een <em>standaard</em>, en een <em>protocol</em>; 
+                OAuth 2.0 is een <em>framework</em></li>
+                <li>
+                    Enterprisey. Quote RFC 6749:
+                    <blockquote><em>"...as a rich and highly extensible
+                    framework with many optional components, on its own, this
+                    specification is likely to produce a wide range of non-interoperable
+                    implementations."</em></blockquote>
+                </li>
+                <li>
+                    Moeilijk om veilig te implementeren
+                    <ul>
+                        <li>RFC 6749: heel hoofdstuk 10 gaat over security considerations</li>
+                        <li>RFC 6819: <b>70</b> pagina's over threat models &amp; security considerations</li>
+                    </ul>
+                </li>
+                <li>Access Token niet gekoppeld aan client</li>
+                <li>State/schaalbaarheid</li>
+            </ul>
+        </div>
+
+        <div class="slide" id="slide-abstract-flow" data-states="6">
+            <h1>Authorization code flow (1)</h1>
+            <ul>
+                <li>Client registreert app en krijgt Client-ID en Client-Secret</li>
+                <li>End-User krijgt redirect van Client naar Authorization Server</li>
+                <li>End-User geeft autorisatie voor Client aan Authorization Server</li>
+                <li>End-User krijgt redirect met Code naar Client</li>
+                <li>Client wisselt Code in voor Access Token bij Authorization Server</li>
+                <li>Client roept Resource Server API's aan met Access Token</li>
+            </ul>
+        </div>
+
+        <div class="slide" id="slide-flowchart" data-states="41">
+            <h1 class="centered">Authorization code flow (2)</h1>
+            <div class="centered" style="overflow-x: hidden;">
+                <img src="github-register-app.png" data-state="4" class="hidden popup"/>
+
+                <img src="github-authorize-link.png" data-state="8" class="hidden popup"/>
+
+                <img src="github-authorize-redirect.png" data-state="12" class="hidden popup"/>
+
+                <img src="github-code-redirect.png" data-state="18" class="hidden popup"/>
+
+                <img src="github-code.png" data-state="21" class="hidden popup"/>
+
+                <img src="github-access-token.png" data-state="24" class="hidden popup"/>
+
+                <img src="github-access-token-response.png" data-state="27" class="hidden popup"/>
+
+                <img src="github-api-1.png" data-state="31" class="hidden popup"/>
+
+                <img src="github-api-2.png" data-state="34" class="hidden popup"/>
+
+                <img src="github-api-2-response.png" data-state="37" class="hidden popup"/>
+
+                <img src="github-api-1-response.png" data-state="40" class="hidden popup"/>
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="935" height="744" xmlns:xlink="http://www.w3.org/1999/xlink"
+                     style="margin-left: 228px;">
+                    <source><![CDATA[
+                        Browser->j0057.nl: GET /
+                        j0057.nl->Browser: 200 OK
+                        Browser->j0057.nl: GET /oauth/github/init/
+                        j0057.nl->Browser: 303 See Other
+                        Browser->github.com: GET /login/oauth/authorize
+                        github.com->github.com: Login
+                        github.com->github.com: Authorize j0057.nl
+                        github.com->Browser: 302 Found
+                        Browser->j0057.nl: GET /oauth/github/code/
+                        j0057.nl->github.com: POST /login/oauth/access_token
+                        github.com->j0057.nl: 200 OK
+                        j0057.nl->Browser: 200 OK
+                        Browser->j0057.nl: GET /oauth/github/user
+                        j0057.nl->github.com: GET /user
+                        github.com->j0057.nl: 200 OK
+                        j0057.nl->Browser: 200 OK
+                    ]]></source>
+                    <desc style="">Created with Raphaël 2.1.0</desc>
+                    <defs style="">
+                        <path stroke-linecap="round" d="M5,0 0,2.5 5,5z" id="raphael-marker-block" style=""></path>
+                        <marker id="raphael-marker-endblock55" markerHeight="5" markerWidth="5" orient="auto" refX="2.5" refY="2.5" style="">
+                            <use xlink:href="#raphael-marker-block" transform="rotate(180 2.5 2.5) scale(1,1)" stroke-width="1.0000" fill="#000" stroke="none" style=""></use>
+                        </marker>
+                    </defs>
+                    <g data-state="1">
+                        <rect x="10" y="20" width="90" height="38" r="0" rx="0" ry="0" fill="none" stroke="#000000" stroke-width="2" style=""></rect>
+                        <rect x="20" y="30" width="70" height="18" r="0" rx="0" ry="0" fill="#ffffff" stroke="none" style=""></rect>
+                        <text x="55" y="39" text-anchor="middle" font="10px &quot;Arial&quot;" stroke="none" fill="#000000" style="text-anchor: middle; font-style: normal; font-variant: normal; font-weight: normal; font-size: 16px; line-height: normal; font-family: 'Andale Mono', monospace;" font-size="16px" font-family="Andale Mono, monospace">
+                            <tspan style="" dy="5.515625">Browser</tspan>
+                        </text>
+                        <rect x="10" y="686" width="90" height="38" r="0" rx="0" ry="0" fill="none" stroke="#000000" stroke-width="2" style=""></rect>
+                        <rect x="20" y="696" width="70" height="18" r="0" rx="0" ry="0" fill="#ffffff" stroke="none" style=""></rect>
+                        <text x="55" y="705" text-anchor="middle" font="10px &quot;Arial&quot;" stroke="none" fill="#000000" style="text-anchor: middle; font-style: normal; font-variant: normal; font-weight: normal; font-size: 16px; line-height: normal; font-family: 'Andale Mono', monospace;" font-size="16px" font-family="Andale Mono, monospace">
+                            <tspan style="" dy="5.515625">Browser</tspan>
+                        </text>
+                        <path fill="none" stroke="#000000" d="M55,58L55,686" stroke-width="2" style=""></path>
+                    </g>
+                    <g data-state="2">
+                        <rect x="255" y="20" width="100" height="38" r="0" rx="0" ry="0" fill="none" stroke="#000000" stroke-width="2" style=""></rect>
+                        <rect x="265" y="30" width="80" height="18" r="0" rx="0" ry="0" fill="#ffffff" stroke="none" style=""></rect>
+                        <text x="305" y="39" text-anchor="middle" font="10px &quot;Arial&quot;" stroke="none" fill="#000000" style="text-anchor: middle; font-style: normal; font-variant: normal; font-weight: normal; font-size: 16px; line-height: normal; font-family: 'Andale Mono', monospace;" font-size="16px" font-family="Andale Mono, monospace">
+                            <tspan style="" dy="5.515625">j0057.nl</tspan>
+                        </text>
+                        <rect x="255" y="686" width="100" height="38" r="0" rx="0" ry="0" fill="none" stroke="#000000" stroke-width="2" style=""></rect>
+                        <rect x="265" y="696" width="80" height="18" r="0" rx="0" ry="0" fill="#ffffff" stroke="none" style=""></rect>
+                        <text x="305" y="705" text-anchor="middle" font="10px &quot;Arial&quot;" stroke="none" fill="#000000" style="text-anchor: middle; font-style: normal; font-variant: normal; font-weight: normal; font-size: 16px; line-height: normal; font-family: 'Andale Mono', monospace;" font-size="16px" font-family="Andale Mono, monospace">
+                            <tspan style="" dy="5.515625">j0057.nl</tspan>
+                        </text>
+                        <path fill="none" stroke="#000000" d="M305,58L305,686" stroke-width="2" style=""></path>
+                    </g>
+                    <g data-state="3">
+                        <rect x="565" y="20" width="120" height="38" r="0" rx="0" ry="0" fill="none" stroke="#000000" stroke-width="2" style=""></rect>
+                        <rect x="575" y="30" width="100" height="18" r="0" rx="0" ry="0" fill="#ffffff" stroke="none" style=""></rect>
+                        <text x="625" y="39" text-anchor="middle" font="10px &quot;Arial&quot;" stroke="none" fill="#000000" style="text-anchor: middle; font-style: normal; font-variant: normal; font-weight: normal; font-size: 16px; line-height: normal; font-family: 'Andale Mono', monospace;" font-size="16px" font-family="Andale Mono, monospace">
+                            <tspan style="" dy="5.515625">github.com</tspan>
+                        </text>
+                        <rect x="565" y="686" width="120" height="38" r="0" rx="0" ry="0" fill="none" stroke="#000000" stroke-width="2" style=""></rect>
+                        <rect x="575" y="696" width="100" height="18" r="0" rx="0" ry="0" fill="#ffffff" stroke="none" style=""></rect>
+                        <text x="625" y="705" text-anchor="middle" font="10px &quot;Arial&quot;" stroke="none" fill="#000000" style="text-anchor: middle; font-style: normal; font-variant: normal; font-weight: normal; font-size: 16px; line-height: normal; font-family: 'Andale Mono', monospace;" font-size="16px" font-family="Andale Mono, monospace">
+                            <tspan style="" dy="5.515625">github.com</tspan>
+                        </text>
+                        <path fill="none" stroke="#000000" d="M625,58L625,686" stroke-width="2" style=""></path>
+                    </g>
+                    <g data-state="6">
+                        <rect x="155" y="74" width="50" height="18" r="0" rx="0" ry="0" fill="#ffffff" stroke="none" style=""></rect>
+                        <text x="180" y="83" text-anchor="middle" font="10px &quot;Arial&quot;" stroke="none" fill="#000000" style="text-anchor: middle; font-style: normal; font-variant: normal; font-weight: normal; font-size: 15px; line-height: normal; font-family: 'Andale Mono', monospace;" font-size="15px" font-family="Andale Mono, monospace">
+                            <tspan style="" dy="5.515625">GET /</tspan>
+                        </text>
+                        <path fill="none" stroke="#000000" d="M55,96C55,96,264.77115631103516,96,300.00615522265434,96" stroke-width="2" marker-end="url(#raphael-marker-endblock55)" stroke-dasharray="0" style=""></path>
+                    </g>
+                    <g data-state="7">
+                        <rect x="150" y="112" width="60" height="18" r="0" rx="0" ry="0" fill="#ffffff" stroke="none" style=""></rect>
+                        <text x="180" y="121" text-anchor="middle" font="10px &quot;Arial&quot;" stroke="none" fill="#000000" style="text-anchor: middle; font-style: normal; font-variant: normal; font-weight: normal; font-size: 15px; line-height: normal; font-family: 'Andale Mono', monospace;" font-size="15px" font-family="Andale Mono, monospace">
+                            <tspan style="" dy="5.515625">200 OK</tspan>
+                        </text>
+                        <path fill="none" stroke="#000000" d="M305,134C305,134,95.22884368896484,134,59.99384477734566,134" stroke-width="2" marker-end="url(#raphael-marker-endblock55)" stroke-dasharray="0" style=""></path>
+                    </g>
+                    <g data-state="10">
+                        <rect x="65" y="150" width="230" height="18" r="0" rx="0" ry="0" fill="#ffffff" stroke="none" style=""></rect>
+                        <text x="180" y="159" text-anchor="middle" font="10px &quot;Arial&quot;" stroke="none" fill="#000000" style="text-anchor: middle; font-style: normal; font-variant: normal; font-weight: normal; font-size: 15px; line-height: normal; font-family: 'Andale Mono', monospace;" font-size="15px" font-family="Andale Mono, monospace">
+                            <tspan style="" dy="5.515625">GET /oauth/github/init/</tspan>
+                        </text>
+                        <path fill="none" stroke="#000000" d="M55,172C55,172,264.77115631103516,172,300.00615522265434,172" stroke-width="2" marker-end="url(#raphael-marker-endblock55)" stroke-dasharray="0" style=""></path>
+                    </g>
+                    <g data-state="11">
+                        <rect x="115" y="188" width="130" height="18" r="0" rx="0" ry="0" fill="#ffffff" stroke="none" style=""></rect>
+                        <text x="180" y="197" text-anchor="middle" font="10px &quot;Arial&quot;" stroke="none" fill="#000000" style="text-anchor: middle; font-style: normal; font-variant: normal; font-weight: normal; font-size: 15px; line-height: normal; font-family: 'Andale Mono', monospace;" font-size="15px" font-family="Andale Mono, monospace">
+                            <tspan style="" dy="5.515625">303 See Other</tspan>
+                        </text>
+                        <path fill="none" stroke="#000000" d="M305,210C305,210,95.22884368896484,210,59.99384477734566,210" stroke-width="2" marker-end="url(#raphael-marker-endblock55)" stroke-dasharray="0" style=""></path>
+                    </g>
+                    <g data-state="14">
+                        <rect x="210" y="226" width="260" height="18" r="0" rx="0" ry="0" fill="#ffffff" stroke="none" style=""></rect>
+                        <text x="340" y="235" text-anchor="middle" font="10px &quot;Arial&quot;" stroke="none" fill="#000000" style="text-anchor: middle; font-style: normal; font-variant: normal; font-weight: normal; font-size: 15px; line-height: normal; font-family: 'Andale Mono', monospace;" font-size="15px" font-family="Andale Mono, monospace">
+                            <tspan style="" dy="5.515625">GET /login/oauth/authorize</tspan>
+                        </text>
+                        <path fill="none" stroke="#000000" d="M55,248C55,248,563.9663888514042,248,620.007365748861,248" stroke-width="2" marker-end="url(#raphael-marker-endblock55)" stroke-dasharray="0" style=""></path>
+                    </g>
+                    <g data-state="15">
+                        <rect x="650" y="268" width="50" height="18" r="0" rx="0" ry="0" fill="#ffffff" stroke="none" style=""></rect>
+                        <text x="675" y="277" text-anchor="middle" font="10px &quot;Arial&quot;" stroke="none" fill="#000000" style="text-anchor: middle; font-style: normal; font-variant: normal; font-weight: normal; font-size: 15px; line-height: normal; font-family: 'Andale Mono', monospace;" font-size="15px" font-family="Andale Mono, monospace">
+                            <tspan style="" dy="5.515625">Login</tspan>
+                        </text>
+                        <path fill="none" stroke="#000000" d="M625,263L645,263" stroke-width="2" stroke-dasharray="0" style=""></path>
+                        <path fill="none" stroke="#000000" d="M645,263L645,296" stroke-width="2" stroke-dasharray="0" style=""></path>
+                        <path fill="none" stroke="#000000" d="M645,296C645,296,635.9191131591797,296,629.9952533841133,296" stroke-width="2" stroke-dasharray="0" marker-end="url(#raphael-marker-endblock55)" style=""></path>
+                    </g>
+                    <g data-state="16">
+                        <rect x="650" y="306" width="180" height="18" r="0" rx="0" ry="0" fill="#ffffff" stroke="none" style=""></rect>
+                        <text x="740" y="315" text-anchor="middle" font="10px &quot;Arial&quot;" stroke="none" fill="#000000" style="text-anchor: middle; font-style: normal; font-variant: normal; font-weight: normal; font-size: 15px; line-height: normal; font-family: 'Andale Mono', monospace;" font-size="15px" font-family="Andale Mono, monospace">
+                            <tspan style="" dy="5.515625">Authorize j0057.nl</tspan>
+                        </text>
+                        <path fill="none" stroke="#000000" d="M625,301L645,301" stroke-width="2" stroke-dasharray="0" style=""></path>
+                        <path fill="none" stroke="#000000" d="M645,301L645,334" stroke-width="2" stroke-dasharray="0" style=""></path>
+                        <path fill="none" stroke="#000000" d="M645,334C645,334,635.9191131591797,334,629.9952533841133,334" stroke-width="2" stroke-dasharray="0" marker-end="url(#raphael-marker-endblock55)" style=""></path>
+                    </g>
+                    <g data-state="17">
+                        <rect x="295" y="340" width="90" height="18" r="0" rx="0" ry="0" fill="#ffffff" stroke="none" style=""></rect>
+                        <text x="340" y="349" text-anchor="middle" font="10px &quot;Arial&quot;" stroke="none" fill="#000000" style="text-anchor: middle; font-style: normal; font-variant: normal; font-weight: normal; font-size: 15px; line-height: normal; font-family: 'Andale Mono', monospace;" font-size="15px" font-family="Andale Mono, monospace">
+                            <tspan style="" dy="5.515625">302 Found</tspan>
+                        </text>
+                        <path fill="none" stroke="#000000" d="M625,362C625,362,116.03361114859581,362,59.99263425113895,362" stroke-width="2" marker-end="url(#raphael-marker-endblock55)" stroke-dasharray="0" style=""></path>
+                    </g>
+                    <g data-state="20">
+                        <rect x="65" y="378" width="230" height="18" r="0" rx="0" ry="0" fill="#ffffff" stroke="none" style=""></rect>
+                        <text x="180" y="387" text-anchor="middle" font="10px &quot;Arial&quot;" stroke="none" fill="#000000" style="text-anchor: middle; font-style: normal; font-variant: normal; font-weight: normal; font-size: 15px; line-height: normal; font-family: 'Andale Mono', monospace;" font-size="15px" font-family="Andale Mono, monospace">
+                            <tspan style="" dy="5.515625">GET /oauth/github/code/</tspan>
+                        </text>
+                        <path fill="none" stroke="#000000" d="M55,400C55,400,264.77115631103516,400,300.00615522265434,400" stroke-width="2" marker-end="url(#raphael-marker-endblock55)" stroke-dasharray="0" style=""></path>
+                    </g>
+                    <g data-state="23">
+                        <rect x="315" y="416" width="300" height="18" r="0" rx="0" ry="0" fill="#ffffff" stroke="none" style=""></rect>
+                        <text x="465" y="425" text-anchor="middle" font="10px &quot;Arial&quot;" stroke="none" fill="#000000" style="text-anchor: middle; font-style: normal; font-variant: normal; font-weight: normal; font-size: 15px; line-height: normal; font-family: 'Andale Mono', monospace;" font-size="15px" font-family="Andale Mono, monospace">
+                            <tspan style="" dy="5.515625">POST /login/oauth/access_token</tspan>
+                        </text>
+                        <path fill="none" stroke="#000000" d="M305,438C305,438,579.4073677062988,438,620.0057233776897,438" stroke-width="2" marker-end="url(#raphael-marker-endblock55)" stroke-dasharray="0" style=""></path>
+                    </g>
+                    <g data-state="26">
+                        <rect x="435" y="454" width="60" height="18" r="0" rx="0" ry="0" fill="#ffffff" stroke="none" style=""></rect>
+                        <text x="465" y="463" text-anchor="middle" font="10px &quot;Arial&quot;" stroke="none" fill="#000000" style="text-anchor: middle; font-style: normal; font-variant: normal; font-weight: normal; font-size: 15px; line-height: normal; font-family: 'Andale Mono', monospace;" font-size="15px" font-family="Andale Mono, monospace">
+                            <tspan style="" dy="5.515625">200 OK</tspan>
+                        </text>
+                        <path fill="none" stroke="#000000" d="M625,476C625,476,350.5926322937012,476,309.9942766223103,476" stroke-width="2" marker-end="url(#raphael-marker-endblock55)" stroke-dasharray="0" style=""></path>
+                    </g>
+                    <g data-state="29">
+                        <rect x="150" y="492" width="60" height="18" r="0" rx="0" ry="0" fill="#ffffff" stroke="none" style=""></rect>
+                        <text x="180" y="501" text-anchor="middle" font="10px &quot;Arial&quot;" stroke="none" fill="#000000" style="text-anchor: middle; font-style: normal; font-variant: normal; font-weight: normal; font-size: 15px; line-height: normal; font-family: 'Andale Mono', monospace;" font-size="15px" font-family="Andale Mono, monospace">
+                            <tspan style="" dy="5.515625">200 OK</tspan>
+                        </text>
+                        <path fill="none" stroke="#000000" d="M305,514C305,514,95.22884368896484,514,59.99384477734566,514" stroke-width="2" marker-end="url(#raphael-marker-endblock55)" stroke-dasharray="0" style=""></path>
+                    </g>
+                    <g data-state="30">
+                        <rect x="70" y="530" width="220" height="18" r="0" rx="0" ry="0" fill="#ffffff" stroke="none" style=""></rect>
+                        <text x="180" y="539" text-anchor="middle" font="10px &quot;Arial&quot;" stroke="none" fill="#000000" style="text-anchor: middle; font-style: normal; font-variant: normal; font-weight: normal; font-size: 15px; line-height: normal; font-family: 'Andale Mono', monospace;" font-size="15px" font-family="Andale Mono, monospace">
+                            <tspan style="" dy="5.515625">GET /oauth/github/api/user</tspan>
+                        </text>
+                        <path fill="none" stroke="#000000" d="M55,552C55,552,264.77115631103516,552,300.00615522265434,552" stroke-width="2" marker-end="url(#raphael-marker-endblock55)" stroke-dasharray="0" style=""></path>
+                    </g>
+                    <g data-state="33">
+                        <rect x="420" y="568" width="90" height="18" r="0" rx="0" ry="0" fill="#ffffff" stroke="none" style=""></rect>
+                        <text x="465" y="577" text-anchor="middle" font="10px &quot;Arial&quot;" stroke="none" fill="#000000" style="text-anchor: middle; font-style: normal; font-variant: normal; font-weight: normal; font-size: 15px; line-height: normal; font-family: 'Andale Mono', monospace;" font-size="15px" font-family="Andale Mono, monospace">
+                            <tspan style="" dy="5.515625">GET /user</tspan>
+                        </text>
+                        <path fill="none" stroke="#000000" d="M305,590C305,590,579.4073677062988,590,620.0057233776897,590" stroke-width="2" marker-end="url(#raphael-marker-endblock55)" stroke-dasharray="0" style=""></path>
+                    </g>
+                    <g data-state="36">
+                        <rect x="435" y="606" width="60" height="18" r="0" rx="0" ry="0" fill="#ffffff" stroke="none" style=""></rect>
+                        <text x="465" y="615" text-anchor="middle" font="10px &quot;Arial&quot;" stroke="none" fill="#000000" style="text-anchor: middle; font-style: normal; font-variant: normal; font-weight: normal; font-size: 15px; line-height: normal; font-family: 'Andale Mono', monospace;" font-size="15px" font-family="Andale Mono, monospace">
+                            <tspan style="" dy="5.515625">200 OK</tspan>
+                        </text>
+                        <path fill="none" stroke="#000000" d="M625,628C625,628,350.5926322937012,628,309.9942766223103,628" stroke-width="2" marker-end="url(#raphael-marker-endblock55)" stroke-dasharray="0" style=""></path>
+                    </g>
+                    <g data-state="39">
+                        <rect x="150" y="644" width="60" height="18" r="0" rx="0" ry="0" fill="#ffffff" stroke="none" style=""></rect>
+                        <text x="180" y="653" text-anchor="middle" font="10px &quot;Arial&quot;" stroke="none" fill="#000000" style="text-anchor: middle; font-style: normal; font-variant: normal; font-weight: normal; font-size: 15px; line-height: normal; font-family: 'Andale Mono', monospace;" font-size="15px" font-family="Andale Mono, monospace">
+                            <tspan style="" dy="5.515625">200 OK</tspan>
+                        </text>
+                        <path fill="none" stroke="#000000" d="M305,666C305,666,95.22884368896484,666,59.99384477734566,666" stroke-width="2" marker-end="url(#raphael-marker-endblock55)" stroke-dasharray="0" style=""></path>
+                    </g>
+                </svg>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-pocs" data-states="3">
+            <h1>POC's</h1>
+            <ul>
+                <li>Gemaakt in Python</li>
+                <li>oauth: OAuth2 API's aanroepen van verschillende websites</li>
+                <li>todo: Een simpele web app met een OAuth API</li>
+            </ul>
+        </div>
+
+        <div class="slide" id="slide-python" data-states="8">
+            <div>
+                <h1 class="revealed">Python</h1>
+                <h1 class="hidden">I &#x2764; Python</h1>
+                <h1 style="visibility: hidden;">X</h1>
+            </div>
+            <ul>
+                <li>Cross-platform</li>
+                <li>Leesbaarheid/significante whitespace</li>
+                <li>Batteries included</li>
+                <li>Dynamisch, sterk getypeerd</li>
+                <li>Snel prototypes bouwen</li>
+                <li>Function decorators</li>
+                <li>Metaclasses</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h1>Demo</h1>
+            <p>
+                <a class="new-window" href="https://dev.j0057.nl/oauth/">Fun with OAuth</a>
+            </p>
+            <p>
+                <a class="new-window" href="http://dev2.j0057.nl/todo/todo.xhtml">Todo app</a>
+            </p>
+        </div>
+
+        <div class="slide">
+            <h1>0xC0DE</h1>
+            <p>
+                <a class="new-window" href="https://github.com/j0057/oauth">https://github.com/j0057/oauth</a>
+            </p>
+            <p>
+                <a class="new-window" href="https://github.com/j0057/todo">https://github.com/j0057/todo</a>
+            </p>
+        </div>
+
+        <div class="slide" id="slide-schoolmaster" data-states="4">
+            <h1>Toepassingen voor SchoolMaster?</h1>
+            <ul>
+                <li>Office365 / Google Docs / DropBox: ELO integratie</li>
+                <li>Facebook / Twitter / Google account koppelen aan Magister account</li>
+                <li>Zen API toegankelijk maken voor derde partijen</li>
+                <li>______?</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h1>Specs</h1>
+            <ul>
+                <li><a class="new-window" href="http://tools.ietf.org/html/rfc5849">RFC 5849</a>: The OAuth 1.0 Protocol</li>
+                <li><a class="new-window" href="http://tools.ietf.org/html/rfc6749">RFC 6749</a>: The OAuth 2.0 Authorization Framework</li>
+                <li><a class="new-window" href="http://tools.ietf.org/html/rfc6750">RFC 6750</a>: The OAuth 2.0 Authorization Framework: Bearer Token Usage</li>
+                <li><a class="new-window" href="http://tools.ietf.org/html/rfc6819">RFC 6819</a>: OAuth 2.0 Threat Model and Security Considerations</li>
+                <li><a class="new-window" href="http://tools.ietf.org/html/rfc7009">RFC 7009</a>: OAuth 2.0 Token Revocation</li>
+            </ul>
+            <h1>Further Reading</h1>
+            <ul>
+                <li><a class="new-window" href="http://aaronparecki.com/articles/2012/07/29/1/oauth2-simplified">OAuth 2.0 simplified</a></li>
+                <li><a class="new-window" href="http://developer.github.com/v3/oauth/">GitHub API OAuth documentatie</a></li>
+                <li><a class="new-window" href="http://hueniverse.com/2012/07/oauth-2-0-and-the-road-to-hell/">OAuth 2.0 and the Road to Hell</a> (Eran Hammer)</li>
+            </ul>
+        </div>
+
+    </body>
+</html>
