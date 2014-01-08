@@ -1,10 +1,8 @@
-env2*
-env3*
-.cache2*
-.cache3*
 *.pyc
-keys.json
-log
+MANIFEST*
+Makefile.in
+env27
+requirements.txt
+*.egg-info
 *.swp
-dist
-MANIFEST
+conf/keys.json
