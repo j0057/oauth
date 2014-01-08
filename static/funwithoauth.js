@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
                                 ? ["a", {href: item.alternateLink, "class": "document"}, item.title]
                                 : "",
                             item.mimeType == "application/vnd.google-apps.folder"
-                                ? ["a", {href: "/oauth/google/api/drive/v2/files?q=\"" + item.id + "\"+in+parents&fields=items(alternateLink,defaultOpenWithLink,iconLink,id,mimeType,thumbnailLink,title)", "class": "folder"},
+                                ? ["a", {href: "/oauth/google/api/drive/v2/files?q=\"" + item.id + "\"+in+parents&fields=items(alternateLink,defaultOpenWithLink,iconLink,id,mimeType,thumbnailLink,title,downloadUrl,exportLinks,webContentLink)", "class": "folder"},
                                     item.title]
                                 : "",
                             item.mimeType == "application/vnd.google-apps.folder"
