@@ -47,7 +47,8 @@ document.addEventListener('DOMContentLoaded', function(e) {
                     : "?" + document.cookie;
                 link.focus();
                 link.blur();
-        });
+            });
+        window.scrollTo(0,0);
     });
 
     document.querySelector('#github_user').addEventListener('click', function(e) {

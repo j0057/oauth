@@ -77,8 +77,8 @@ class Github(object):
     token_uri     = 'https://github.com/login/oauth/access_token'
     api_base_uri  = 'https://api.github.com/'
 
-    callback_uri  = 'https://dev.j0057.nl/oauth/github/code/'
-    redirect_uri  = 'https://dev.j0057.nl/oauth/index.xhtml'
+    callback_uri  = 'https://{0}/oauth/github/code/'.format(SERVER_HOSTNAME)
+    redirect_uri  = 'https://{0}/oauth/index.xhtml'.format(SERVER_HOSTNAME)
 
 class Facebook(object):
     key_fmt       = 'facebook_{0}'
@@ -90,8 +90,8 @@ class Facebook(object):
     token_uri     = 'https://graph.facebook.com/oauth/access_token'
     api_base_uri  = 'https://graph.facebook.com/'
 
-    callback_uri  = 'https://dev.j0057.nl/oauth/facebook/code/'
-    redirect_uri  = 'https://dev.j0057.nl/oauth/index.xhtml'
+    callback_uri  = 'https://{0}/oauth/facebook/code/'.format(SERVER_HOSTNAME)
+    redirect_uri  = 'https://{0}/oauth/index.xhtml'.format(SERVER_HOSTNAME)
     
 class Live(object):
     key_fmt       = 'live_{0}'
@@ -103,8 +103,8 @@ class Live(object):
     token_uri     = 'https://login.live.com/oauth20_token.srf'
     api_base_uri  = 'https://apis.live.net/v5.0/'
 
-    callback_uri  = 'https://dev.j0057.nl/oauth/live/code/'
-    redirect_uri  = 'https://dev.j0057.nl/oauth/index.xhtml'
+    callback_uri  = 'https://{0}/oauth/live/code/'.format(SERVER_HOSTNAME)
+    redirect_uri  = 'https://{0}/oauth/index.xhtml'.format(SERVER_HOSTNAME)
 
 class Google(object):
     key_fmt       = 'google_{0}'
@@ -116,8 +116,8 @@ class Google(object):
     token_uri     = 'https://accounts.google.com/o/oauth2/token'
     api_base_uri  = 'https://www.googleapis.com/'
 
-    callback_uri  = 'https://dev.j0057.nl/oauth/google/code/'
-    redirect_uri  = 'https://dev.j0057.nl/oauth/index.xhtml'
+    callback_uri  = 'https://{0}/oauth/google/code/'.format(SERVER_HOSTNAME)
+    redirect_uri  = 'https://{0}/oauth/index.xhtml'.format(SERVER_HOSTNAME)
 
 class Dropbox(object):
     key_fmt       = 'dropbox_{0}'
@@ -129,8 +129,8 @@ class Dropbox(object):
     token_uri     = 'https://api.dropbox.com/1/oauth2/token'
     api_base_uri  = 'https://api.dropbox.com/'
 
-    callback_uri  = 'https://dev.j0057.nl/oauth/dropbox/code/'
-    redirect_uri  = 'https://dev.j0057.nl/oauth/index.xhtml'
+    callback_uri  = 'https://{0}/oauth/dropbox/code/'.format(SERVER_HOSTNAME)
+    redirect_uri  = 'https://{0}/oauth/index.xhtml'.format(SERVER_HOSTNAME)
 
 class Linkedin(object):
     key_fmt       = 'linkedin_{0}'
@@ -142,8 +142,8 @@ class Linkedin(object):
     token_uri     = 'https://www.linkedin.com/uas/oauth2/accessToken'
     api_base_uri  = 'https://api.linkedin.com/'
 
-    callback_uri  = 'https://dev.j0057.nl/oauth/linkedin/code/'
-    redirect_uri  = 'https://dev.j0057.nl/oauth/index.xhtml'
+    callback_uri  = 'https://{0}/oauth/linkedin/code/'.format(SERVER_HOSTNAME)
+    redirect_uri  = 'https://{0}/oauth/index.xhtml'.format(SERVER_HOSTNAME)
 
 class Reddit(object):
     key_fmt       = 'reddit_{0}'
@@ -155,8 +155,8 @@ class Reddit(object):
     token_uri     = 'https://ssl.reddit.com/api/v1/access_token'
     api_base_uri  = 'https://oauth.reddit.com/'
 
-    callback_uri  = 'https://dev.j0057.nl/oauth/reddit/code/'
-    redirect_uri  = 'https://dev.j0057.nl/oauth/index.xhtml'
+    callback_uri  = 'https://{0}/oauth/reddit/code/'.format(SERVER_HOSTNAME)
+    redirect_uri  = 'https://{0}/oauth/index.xhtml'.format(SERVER_HOSTNAME)
 
 class J0057Todo(object):
     key_fmt       = 'j0057_todo_{0}'
@@ -168,8 +168,8 @@ class J0057Todo(object):
     token_uri     = 'http://dev2.j0057.nl/todo/access_token/'
     api_base_uri  = 'http://dev2.j0057.nl/todo/'
 
-    callback_uri  = 'https://dev.j0057.nl/oauth/j0057-todo/code/'
-    redirect_uri  = 'https://dev.j0057.nl/oauth/index.xhtml'
+    callback_uri  = 'https://{0}/oauth/j0057-todo/code/'.format(SERVER_HOSTNAME)
+    redirect_uri  = 'https://{0}/oauth/index.xhtml'.format(SERVER_HOSTNAME)
 
 #
 # OauthInit
@@ -264,8 +264,12 @@ class OauthCode(xhttp.Resource):
                 'x-detail': "Don't know how to handle content type {0}".format(content_type) })
         return access_token
 
-    @xhttp.get({ 'code': r'^.+$', 'state': r'^[-_0-9a-zA-Z]+$',
-                 'authuser?': '.*', 'prompt?': '.*', 'session_state?': '.*' })
+    @xhttp.get({ 'code': r'^.+$', 
+                 'state': r'^[-_0-9a-zA-Z]+$',
+                 'authuser?': '.*', 
+                 'prompt?': '.*', 
+                 'session_state?': '.*',
+                 'num_sessions?': '.*' })
     @xhttp.cookie({ 'session_id': '^(.+)$' })
     @xhttp.session('session_id', SESSIONS)
     def GET(self, request):
