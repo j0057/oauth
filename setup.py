@@ -7,14 +7,21 @@ static_dirs = ['conf', 'static']
 import os
 from setuptools import setup
 
+try:
+    with open('oauth.egg-info/version.txt', 'r') as f:
+        version = f.read()
+except:
+    version = None
+
 setup(
     author='Joost Molenaar',
     author_email='j.j.molenaar@gmail.com',
     name='oauth',
     packages=['oauth'],
     url='https://github.com/j0057/oauth',
-    version='0.1.0',
-    data_files=[ (root, map(lambda f: root + '/' + f, files))
+    version=version,
+    version_command=('git describe', 'pep440-git-dev'),
+    data_files=[ (root, [ root + '/' + fn for fn in files ])
                  for src_dir in static_dirs
                  for (root, dirs, files) in os.walk(src_dir) ],
     install_requires=dist_names+repo_names,
@@ -23,4 +30,3 @@ setup(
         'x_dist_names': dist_names,
         'x_static_dirs': static_dirs
     })
-
