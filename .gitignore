@@ -1,8 +1,6 @@
 *.pyc
 MANIFEST*
-Makefile.in
-env27
+env
 requirements.txt
 *.egg-info
-*.swp
 conf/keys.json
