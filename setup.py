@@ -2,7 +2,7 @@
 
 repo_names = ['xhttp','xmlist']
 dist_names = ['requests']
-static_dirs = ['conf', 'static']
+static_dirs = ['static']
 
 import os
 from setuptools import setup
@@ -20,7 +20,7 @@ setup(
     packages=['oauth'],
     url='https://github.com/j0057/oauth',
     version=version,
-    version_command=('git describe', 'pep440-git-dev'),
+    version_command=('git describe', 'pep440-git'),
     data_files=[ (root, [ root + '/' + fn for fn in files ])
                  for src_dir in static_dirs
                  for (root, dirs, files) in os.walk(src_dir) ],
