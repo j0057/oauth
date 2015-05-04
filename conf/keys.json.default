@@ -1,27 +1,27 @@
 {
-    "SERVER_HOSTNAME": "",
+    "server_hostname": "",
 
-    "GITHUB_CLIENT_ID": "",
-    "GITHUB_CLIENT_SECRET": "",
+    "github_client_id": "",
+    "github_client_secret": "",
 
-    "FACEBOOK_CLIENT_ID": "",
-    "FACEBOOK_CLIENT_SECRET": "",
+    "facebook_client_id": "",
+    "facebook_client_secret": "",
 
-    "LIVE_CLIENT_ID": "",
-    "LIVE_CLIENT_SECRET": "",
+    "live_client_id": "",
+    "live_client_secret": "",
 
-    "GOOGLE_CLIENT_ID": "",
-    "GOOGLE_CLIENT_SECRET": "",
+    "google_client_id": "",
+    "google_client_secret": "",
 
-    "DROPBOX_CLIENT_ID": "",
-    "DROPBOX_CLIENT_SECRET": "",
+    "dropbox_client_id": "",
+    "dropbox_client_secret": "",
 
-    "LINKEDIN_CLIENT_ID": "",
-    "LINKEDIN_CLIENT_SECRET": "",
+    "linkedin_client_id": "",
+    "linkedin_client_secret": "",
 
-    "REDDIT_CLIENT_ID": "",
-    "REDDIT_CLIENT_SECRET": "",
+    "reddit_client_id": "",
+    "reddit_client_secret": "",
 
-    "J0057_TODO_CLIENT_ID": "",
-    "J0057_TODO_CLIENT_SECRET": ""
+    "j0057_todo_client_id": "",
+    "j0057_todo_client_secret": ""
 }
