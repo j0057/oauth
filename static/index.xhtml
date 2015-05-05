@@ -6,190 +6,215 @@
         <script src="funwithoauth.js"></script>
         <style>
             #linkbag a { display: block; }
+            .columns { -webkit-column-width: 30em; -moz-column-width: 30em; column-width: 30em; }
+            .no-break { -webkit-column-break-inside: avoid; page-break-inside: avoid; break-inside: avoid; }
+            h1 { text-align: center; }
         </style>
     </head>
     <body>
-        <h1>Fun with oAuth</h1>
+        <h1>Fun with OAuth 2.0</h1>
 
-        <h2>Session</h2>
-        <p>
-            <a href="/oauth/session/start/">Initialize</a>;
-            <a href="/oauth/session/delete/">Reset</a>
-        </p>
-        <p>Current cookie: [<span id="session_id"/>]</p>
+        <div class="columns">
+            <div class="no-break">
+                <h2>Session</h2>
+                <p>
+                    <a href="/oauth/session/start/">Initialize</a>;
+                    <a href="/oauth/session/delete/">Reset</a>
+                </p>
+                <p>Current cookie: [<span id="session_id"/>]</p>
+            </div>
 
-        <h2>Github</h2>
-        <ul>
-            <li>
-                <a class="authorize" href="/oauth/github/init/">authorize</a>
-            </li>
-            <li>
-                <a id="github_user" href="/oauth/github/api/user">https://api.github.com/user</a>
-                <div id="github_user_result"/>
-            </li>
-            <li>
-                <a id="github_following" href="/oauth/github/api/user/following">https://api.github.com/user/following</a>
-                <div id="github_following_result"/>
-            </li>
-            <li>
-                <a id="github_followers" href="/oauth/github/api/user/followers">https://api.github.com/user/followers</a>
-                <div id="github_followers_result"/>
-            </li>
-            <li>
-                <a id="github_repos" href="/oauth/github/api/user/repos">https://api.github.com/user/repos</a>
-                <div id="github_repos_result"/>
-            </li>
-        </ul>
+            <div class="no-break">
+                <h2>Github</h2>
+                <ul>
+                    <li>
+                        <a class="authorize" href="/oauth/github/init/">authorize</a>
+                    </li>
+                    <li>
+                        <a id="github_user" href="/oauth/github/api/user">https://api.github.com/user</a>
+                        <div id="github_user_result"/>
+                    </li>
+                    <li>
+                        <a id="github_following" href="/oauth/github/api/user/following">https://api.github.com/user/following</a>
+                        <div id="github_following_result"/>
+                    </li>
+                    <li>
+                        <a id="github_followers" href="/oauth/github/api/user/followers">https://api.github.com/user/followers</a>
+                        <div id="github_followers_result"/>
+                    </li>
+                    <li>
+                        <a id="github_repos" href="/oauth/github/api/user/repos">https://api.github.com/user/repos</a>
+                        <div id="github_repos_result"/>
+                    </li>
+                </ul>
+            </div>
 
-        <h2>Facebook</h2>
-        <ul>
-            <li>
-                <a class="authorize" href="/oauth/facebook/init/">authorize</a>
-            </li>
-            <li>
-                <a id="facebook_me" href="/oauth/facebook/api/me?fields=name,username,friends.fields(name,username)">https://graph.facebook.com/me?fields=name,username,friends.fields(name,username)</a>
-                <div id="facebook_me_result"/>
-            </li>
-        </ul>
+            <div class="no-break">
+                <h2>Facebook</h2>
+                <ul>
+                    <li>
+                        <a class="authorize" href="/oauth/facebook/init/">authorize</a>
+                    </li>
+                    <li>
+                        <a id="facebook_me" href="/oauth/facebook/api/me?fields=name,username,friends.fields(name,username)">https://graph.facebook.com/me?fields=name,username,friends.fields(name,username)</a>
+                        <div id="facebook_me_result"/>
+                    </li>
+                </ul>
+            </div>
 
-        <h2>Live</h2>
-        <ul>
-            <li>
-                <a class="authorize" href="/oauth/live/init/?scope=wl.signin+wl.basic+wl.skydrive">authorize</a>
-            </li>
-            <li>
-                <a id="live_me" href="/oauth/live/api/me">https://apis.live.net/v5.0/me</a>
-                <div id="live_me_result"/> 
-            </li>
-            <li id="live_skydrive_browser">
-                <a class="folder" href="/oauth/live/api/me/skydrive/files">https://apis.live.net/v5.0/me/skydrive/files</a>
-                <ul/>
-            </li>
-        </ul>
-        
-        <h2>Google</h2>
-        <ul>
-            <li>
-                <a class="authorize" href="/oauth/google/init/?scope=openid+email+drive+drive.apps.readonly">authorize</a>
-            </li>
-            <li>
-                <a id="google_userinfo" href="/oauth/google/api/oauth2/v1/userinfo">https://www.googleapis.com/oauth2/v1/userinfo</a>
-                <div id="google_userinfo_result"/>
-            </li>
-            <li id="google_drive_browser">
-                <a class="folder" href="/oauth/google/api/drive/v2/files?q=&quot;root&quot;+in+parents&amp;fields=items(alternateLink,defaultOpenWithLink,iconLink,id,mimeType,thumbnailLink,title,downloadUrl,exportLinks,webContentLink)">https://www.googleapis.com/drive/v2/files</a>
-                <ul/>
-            </li> 
-        </ul>
+            <div class="no-break">
+                <h2>Live</h2>
+                <ul>
+                    <li>
+                        <a class="authorize" href="/oauth/live/init/?scope=wl.signin+wl.basic+wl.skydrive">authorize</a>
+                    </li>
+                    <li>
+                        <a id="live_me" href="/oauth/live/api/me">https://apis.live.net/v5.0/me</a>
+                        <div id="live_me_result"/> 
+                    </li>
+                    <li id="live_skydrive_browser">
+                        <a class="folder" href="/oauth/live/api/me/skydrive/files">https://apis.live.net/v5.0/me/skydrive/files</a>
+                        <ul/>
+                    </li>
+                </ul>
+            </div>
+           
+            <div class="no-break"> 
+                <h2>Google</h2>
+                <ul>
+                    <li>
+                        <a class="authorize" href="/oauth/google/init/?scope=openid+email+drive+drive.apps.readonly">authorize</a>
+                    </li>
+                    <li>
+                        <a id="google_userinfo" href="/oauth/google/api/oauth2/v1/userinfo">https://www.googleapis.com/oauth2/v1/userinfo</a>
+                        <div id="google_userinfo_result"/>
+                    </li>
+                    <li id="google_drive_browser">
+                        <a class="folder" href="/oauth/google/api/drive/v2/files?q=&quot;root&quot;+in+parents&amp;fields=items(alternateLink,defaultOpenWithLink,iconLink,id,mimeType,thumbnailLink,title,downloadUrl,exportLinks,webContentLink)">https://www.googleapis.com/drive/v2/files</a>
+                        <ul/>
+                    </li> 
+                </ul>
+            </div>
 
-        <h2>Dropbox</h2>
-        <ul>
-            <li>
-                <a class="authorize" href="/oauth/dropbox/init/">authorize</a>
-            </li>
-            <li>
-                <a id="dropbox_me" href="/oauth/dropbox/api/1/account/info">https://api.dropbox.com/1/account/info</a>
-                <div id="dropbox_me_result"/>
-            </li>
-            <li id="dropbox_browser">
-                <a class="folder" href="/oauth/dropbox/api/1/metadata/dropbox/">https://api.dropbox.com/1/metadata/dropbox/</a>
-                <ul/>
-            </li> 
-        </ul>
-        
-        <h2>LinkedIn</h2>
-        <ul>
-            <li>
-                <a class="authorize" href="/oauth/linkedin/init/">authorize</a>
-            </li>
-            <li>
-                <a id="linkedin_me" href="/oauth/linkedin/api/v1/people/~">https://api.linked.com/v1/people/~</a>
-                <div id="linkedin_me_result"/>
-            </li>
-            <li>
-                <a id="linkedin_friends" href="/oauth/linkedin/api/v1/people/~/connections">https://api.linkedin.com/v1/people/~/connections</a>
-                <div id="linkedin_friends_result"/>
-            </li>
-        </ul>
+            <div class="no-break">
+                <h2>Dropbox</h2>
+                <ul>
+                    <li>
+                        <a class="authorize" href="/oauth/dropbox/init/">authorize</a>
+                    </li>
+                    <li>
+                        <a id="dropbox_me" href="/oauth/dropbox/api/1/account/info">https://api.dropbox.com/1/account/info</a>
+                        <div id="dropbox_me_result"/>
+                    </li>
+                    <li id="dropbox_browser">
+                        <a class="folder" href="/oauth/dropbox/api/1/metadata/dropbox/">https://api.dropbox.com/1/metadata/dropbox/</a>
+                        <ul/>
+                    </li> 
+                </ul>
+            </div>
+           
+            <div class="no-break"> 
+                <h2>LinkedIn</h2>
+                <ul>
+                    <li>
+                        <a class="authorize" href="/oauth/linkedin/init/">authorize</a>
+                    </li>
+                    <li>
+                        <a id="linkedin_me" href="/oauth/linkedin/api/v1/people/~">https://api.linked.com/v1/people/~</a>
+                        <div id="linkedin_me_result"/>
+                    </li>
+                    <li>
+                        <a id="linkedin_friends" href="/oauth/linkedin/api/v1/people/~/connections">https://api.linkedin.com/v1/people/~/connections</a>
+                        <div id="linkedin_friends_result"/>
+                    </li>
+                </ul>
+            </div>
 
-        <h2>Reddit</h2>
-        <ul>
-            <li>
-                <a class="authorize" href="/oauth/reddit/init/?scope=identity,read">authorize</a>
-            </li>
-            <li>
-                <a id="reddit_me" href="/oauth/reddit/api/api/v1/me">https://oauth.reddit.com/api/v1/me</a>
-                <div id="reddit_me_result"/>
-            </li>
-        </ul>
+            <div class="no-break">
+                <h2>Reddit</h2>
+                <ul>
+                    <li>
+                        <a class="authorize" href="/oauth/reddit/init/?scope=identity,read">authorize</a>
+                    </li>
+                    <li>
+                        <a id="reddit_me" href="/oauth/reddit/api/api/v1/me">https://oauth.reddit.com/api/v1/me</a>
+                        <div id="reddit_me_result"/>
+                    </li>
+                </ul>
+            </div>
 
-        <h2>J0057-todo</h2>
-        <ul>
-            <li>
-                <a class="authorize" href="/oauth/j0057-todo/init/">authorize</a>
-            </li>
-            <li>
-                <a id="j0057_todo_me" href="/oauth/j0057-todo/api/me">http://dev2.j0057.nl/todo/me</a>
-                <div id="j0057_todo_me_result"/>
-            </li>
-        </ul>
+            <div class="no-break">
+                <h2>J0057-todo</h2>
+                <ul>
+                    <li>
+                        <a class="authorize" href="/oauth/j0057-todo/init/">authorize</a>
+                    </li>
+                    <li>
+                        <a id="j0057_todo_me" href="/oauth/j0057-todo/api/me">http://dev2.j0057.nl/todo/me</a>
+                        <div id="j0057_todo_me_result"/>
+                    </li>
+                </ul>
+            </div>
 
-        <h2>Links</h2>
-        <ul id="linkbag">
-            <li>
-                <a href="https://github.com/settings/applications">Github Manage applications</a>
-            </li>
-            <li>
-                <a href="http://developer.github.com/v3/oauth/">Github API oAuth</a>
-            </li>
-            <li>
-                <a href="https://developers.facebook.com/apps">Facebook dev manage apps</a>
-            </li>
-            <li>
-                <a href="https://www.facebook.com/settings?tab=applications">Facebook user manage apps</a>
-            </li>
-            <li>
-                <a href="https://developers.facebook.com/docs/facebook-login/login-flow-for-web-no-jssdk/">Facebook login flow for web</a>
-            </li>
-            <li>
-                <a href="https://code.google.com/apis/console/">Google dev manage apps</a>
-            </li>
-            <li>
-                <a href="https://accounts.google.com/b/0/IssuedAuthSubTokens">Google user manage apps</a>
-            </li>
-            <li>
-                <a href="https://developers.google.com/apis-explorer/#p/drive/v2/drive.files.list">Google Drive API explorer</a>
-            </li>
-            <li>
-                <a href="https://account.live.com/developers/applications/index">Live dev manage apps</a>
-            </li>
-            <li>
-                <a href="https://account.live.com/consent/Manage">Live user manage apps</a>
-            </li>
-            <li>
-                <a href="http://msdn.microsoft.com/en-us/library/live/hh243641">Live SDK developer guide</a>
-            </li>
-            <li>
-                <a href="http://msdn.microsoft.com/en-us/library/live/hh243648.aspx">Live REST reference</a>
-            </li>
-            <li>
-                <a href="http://isdk.dev.live.com/dev/isdk?biciid=LcIsdk">Live interactive SDK</a>
-            </li>
-            <li>
-                <a href="http://msdn.microsoft.com/en-us/library/live/hh826531.aspx">Live working with SkyDrive folders and files</a>
-            </li>
-            <li>
-                <a href="https://www.dropbox.com/developers/apps">Dropbox dev manage apps</a>
-            </li>
-            <li>
-                <a href="https://www.dropbox.com/account#applications">Dropbox user manage apps</a>
-            </li>
-            <li>
-                <a href="https://www.dropbox.com/developers/core/docs">Dropbox Core API docs</a>
-            </li>
-            <li>
-                <a href="https://ssl.reddit.com/prefs/apps">Reddit manage apps</a>
-            </li>
-        </ul>
+            <div class="no-break">
+                <h2>Links</h2>
+                <ul id="linkbag">
+                    <li>
+                        <a href="https://github.com/settings/applications">Github Manage applications</a>
+                    </li>
+                    <li>
+                        <a href="http://developer.github.com/v3/oauth/">Github API oAuth</a>
+                    </li>
+                    <li>
+                        <a href="https://developers.facebook.com/apps">Facebook dev manage apps</a>
+                    </li>
+                    <li>
+                        <a href="https://www.facebook.com/settings?tab=applications">Facebook user manage apps</a>
+                    </li>
+                    <li>
+                        <a href="https://developers.facebook.com/docs/facebook-login/login-flow-for-web-no-jssdk/">Facebook login flow for web</a>
+                    </li>
+                    <li>
+                        <a href="https://code.google.com/apis/console/">Google dev manage apps</a>
+                    </li>
+                    <li>
+                        <a href="https://accounts.google.com/b/0/IssuedAuthSubTokens">Google user manage apps</a>
+                    </li>
+                    <li>
+                        <a href="https://developers.google.com/apis-explorer/#p/drive/v2/drive.files.list">Google Drive API explorer</a>
+                    </li>
+                    <li>
+                        <a href="https://account.live.com/developers/applications/index">Live dev manage apps</a>
+                    </li>
+                    <li>
+                        <a href="https://account.live.com/consent/Manage">Live user manage apps</a>
+                    </li>
+                    <li>
+                        <a href="http://msdn.microsoft.com/en-us/library/live/hh243641">Live SDK developer guide</a>
+                    </li>
+                    <li>
+                        <a href="http://msdn.microsoft.com/en-us/library/live/hh243648.aspx">Live REST reference</a>
+                    </li>
+                    <li>
+                        <a href="http://isdk.dev.live.com/dev/isdk?biciid=LcIsdk">Live interactive SDK</a>
+                    </li>
+                    <li>
+                        <a href="http://msdn.microsoft.com/en-us/library/live/hh826531.aspx">Live working with SkyDrive folders and files</a>
+                    </li>
+                    <li>
+                        <a href="https://www.dropbox.com/developers/apps">Dropbox dev manage apps</a>
+                    </li>
+                    <li>
+                        <a href="https://www.dropbox.com/account#applications">Dropbox user manage apps</a>
+                    </li>
+                    <li>
+                        <a href="https://www.dropbox.com/developers/core/docs">Dropbox Core API docs</a>
+                    </li>
+                    <li>
+                        <a href="https://ssl.reddit.com/prefs/apps">Reddit manage apps</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </body>
 </html>
