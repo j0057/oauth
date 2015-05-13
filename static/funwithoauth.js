@@ -160,8 +160,9 @@ document.addEventListener('DOMContentLoaded', function(e) {
         e.preventDefault();
         request('GET', e.target.href)
             .then(function(xhr) { return JSON.parse(xhr.response); })
-            .then(function(me) { document.querySelector("#google_userinfo_result").textContent = me.email;
-        });
+            .then(function(me) { 
+                document.querySelector("#google_userinfo_result").textContent = me.name + " <" + me.email + ">";
+            });
     });
 
     document.querySelector("#google_drive_browser").addEventListener("click", function(e) {
@@ -180,9 +181,10 @@ document.addEventListener('DOMContentLoaded', function(e) {
             empty(ul);
             request("GET", e.target.href)
                 .then(function(xhr) { return JSON.parse(xhr.response); })
-                .then(function(items) { items
-                    .map(driveItem)
-                    .forEach(function(e) { ul.appendChild(e); });
+                .then(function(json) { 
+                    json.items
+                        .map(driveItem)
+                        .forEach(function(e) { ul.appendChild(e); });
                 })
                 .catch(console.error);
         }
