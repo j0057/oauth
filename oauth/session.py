@@ -3,6 +3,7 @@ import json
 import xhttp
 
 from . import base
+from . import utils
 
 __all__ = [
     'SessionStart',
@@ -12,7 +13,7 @@ __all__ = [
 
 class SessionStart(xhttp.Resource):
     def GET(self, request):
-        session_id = random()
+        session_id = utils.random()
         base.SESSIONS[session_id] = {}
         return {
             'x-status': xhttp.status.SEE_OTHER,

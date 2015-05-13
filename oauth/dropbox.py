@@ -1,3 +1,5 @@
+import urllib
+
 from . import base
 from . import config
 
