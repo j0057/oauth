@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
 
     var githubUserImageLink = function(user) {
         return ['a', {'href': 'https://github.com/' + user.login},
-            ['img', {'src': user.avatar_url, 'title': user.login}]
+            ['img', {'src': user.avatar_url, 'title': user.login, 'class': 'small'}]
         ].toXML();
     };
 
