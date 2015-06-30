@@ -5,6 +5,7 @@ from . import session
 from . import github
 from . import facebook
 from . import live
+from . import office365
 from . import google
 from . import dropbox
 from . import linkedin
@@ -31,6 +32,10 @@ class OauthRouter(xhttp.Router):
             (r'^/oauth/live/code/$',            live.LiveCode()),
             (r'^/oauth/live/api/(.*)$',         live.LiveApi()),
             
+            (r'^/oauth/office365/init/$',       office365.Office365Init()),
+            (r'^/oauth/office365/code/$',       office365.Office365Code()),
+            (r'^/oauth/office365/api/(.*)$',    office365.Office365Api()),
+
             (r'^/oauth/facebook/init/$',        facebook.FacebookInit()),
             (r'^/oauth/facebook/code/$',        facebook.FacebookCode()),
             (r'^/oauth/facebook/api/(.*)$',     facebook.FacebookApi()),
