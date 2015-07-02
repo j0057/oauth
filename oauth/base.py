@@ -32,17 +32,22 @@ class OauthInit(xhttp.Resource):
     def get_scope(self, request):
         return request['x-get']['scope'] or ''
 
+    def get_params(self, scope, nonce):
+        return {
+            'client_id': self.client_id,
+            'redirect_uri': self.callback_uri,
+            'scope': scope,
+            'state': nonce,
+            'response_type': 'code' }
+
     @xhttp.cookie({ 'session_id': '^(.+)$' })
     @xhttp.session('session_id', SESSIONS)
     @xhttp.get({ 'scope?': '.+', 'session_id*': '.*' })
     def GET(self, request):
         request['x-session'][self.key_fmt.format('nonce')] = nonce = random()
-        authorize_uri = self.authorize_uri + '?' + urllib.urlencode({
-            'client_id': self.client_id,
-            'redirect_uri': self.callback_uri,
-            'scope': self.get_scope(request),
-            'state': nonce,
-            'response_type': 'code' })
+        scope = self.get_scope(request)
+        params = self.get_params(scope, nonce)
+        authorize_uri = self.authorize_uri + '?' + urllib.urlencode(params)
         return {
             'x-status': xhttp.status.SEE_OTHER,
             'location': authorize_uri }
