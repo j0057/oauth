@@ -30,7 +30,7 @@ class Office365Init(base.OauthInit, Office365):
 class Office365Code(base.OauthCode, Office365):
     def get_form(self, code):
         form = super(Office365Code, self).get_form(code)
-        form['resource'] = 'https://dev.j0057.nl/oauth/azure-app-id/'
+        form['resource'] = 'https://graph.microsoft.com/'
         return form
 
 class Office365Api(base.OauthApi, Office365):
