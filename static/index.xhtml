@@ -97,9 +97,9 @@
                     <li>
                         <a class="authorize" href="/oauth/google/init/?scope=openid+email+drive+drive.apps.readonly">authorize</a>
                     </li>
-                    <li>
-                        <a id="google_userinfo" href="/oauth/google/api/oauth2/v1/userinfo">https://www.googleapis.com/oauth2/v1/userinfo</a>
-                        <div id="google_userinfo_result"/>
+                    <li id="google_me">
+                        <a href="/oauth/google/api/oauth2/v1/userinfo">https://www.googleapis.com/oauth2/v1/userinfo</a>
+                        <div />
                     </li>
                     <li id="google_drive_browser">
                         <a class="folder" href="/oauth/google/api/drive/v2/files?q=&quot;root&quot;+in+parents&amp;fields=items(alternateLink,defaultOpenWithLink,iconLink,id,mimeType,thumbnailLink,title,downloadUrl,exportLinks,webContentLink)">https://www.googleapis.com/drive/v2/files</a>
