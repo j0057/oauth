@@ -27,11 +27,12 @@ Array.prototype.toXML = function() {
         return document.createTextNode(this.toString());
 };
 
-var empty = function(node) {
-    while (node.lastChild) {
-        node.removeChild(node.lastChild);
+Node.prototype.empty = function() {
+    while (this.lastChild) {
+        this.removeChild(this.lastChild);
     }
-}
+    return this;
+};
 
 document.addEventListener('DOMContentLoaded', function(e) {
     request('GET', '/oauth/session/check/')
@@ -144,8 +145,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         };
         e.preventDefault();
         if (e.target.className == "folder") {
-            var ul = e.target.parentNode.querySelector('ul');
-            empty(ul);
+            var ul = e.target.parentNode.querySelector('ul').empty();
             request('GET', e.target.href)
                 .then(function(xhr) { return JSON.parse(xhr.response); })
                 .then(function(items) { items.data
@@ -179,8 +179,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
             ].toXML();
         };
         if (e.target.className == "folder") { 
-            var ul = e.target.parentNode.querySelector('ul');
-            empty(ul);
+            var ul = e.target.parentNode.querySelector('ul').empty();
             request("GET", e.target.href)
                 .then(function(xhr) { return JSON.parse(xhr.response); })
                 .then(function(json) { 
@@ -222,8 +221,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
             ].toXML();
         };
         if (e.target.className == "folder") {
-            var ul = e.target.parentNode.querySelector("ul");
-            empty(ul);
+            var ul = e.target.parentNode.querySelector("ul").empty();
             request("GET", e.target.href)
                 .then(function(xhr) { return JSON.parse(xhr.response); })
                 .then(function(items) { items.contents
@@ -267,8 +265,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
                     + person.querySelector("last-name").textContent
             }].toXML();
         };
-        var div = document.querySelector("#linkedin_friends_result");
-        empty(div);
+        var div = document.querySelector("#linkedin_friends_result").empty();
         request("GET", e.target.href)
             .then(function(xhr) { xhr.responseXML
                 .querySelectorAll("connections person")
