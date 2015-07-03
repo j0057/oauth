@@ -229,16 +229,12 @@ document.addEventListener('DOMContentLoaded', function(e) {
         }
     });
 
-    document.querySelector("#dropbox_me").addEventListener("click", function(e) {
-        e.preventDefault();
-        request("GET", e.target.href)
-            .then(function(xhr) { return JSON.parse(xhr.response); })
-            .then(function(me) { document.querySelector("#dropbox_me_result").textContent = me.display_name
-                + " <"
-                + me.email
-                + ">";
-            })
-            .catch(console.error);
+    //
+    // dropbox
+    //
+
+    var dropbox_me = new Link('#dropbox_me', function(me) {
+        return ['span', me.display_name, ' <', me.email, '>']
     });
 
     document.querySelector("#dropbox_browser").addEventListener("click", function(e) {
