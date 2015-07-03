@@ -15,16 +15,21 @@ var request = function(method, url) {
 Array.prototype.toXML = function() {
     if (this instanceof Array) {
         var result = document.createElement(this[0]);
-        for (var i = 1; i < this.length; i++)
-            if (typeof this[i] == 'object' && !(this[i] instanceof Array))
-                for (var a in this[i])
+        for (var i = 1; i < this.length; i++) {
+            if (typeof this[i] == 'object' && !(this[i] instanceof Array)) {
+                for (var a in this[i]) {
                     result.setAttribute(a, this[i][a]);
-            else
+                }
+            }
+            else {
                 result.appendChild(Array.prototype.toXML.call(this[i]));
+            }
+        }
         return result;
     }
-    else
+    else {
         return document.createTextNode(this.toString());
+    }
 };
 
 Node.prototype.empty = function() {
