@@ -98,62 +98,28 @@ document.addEventListener('DOMContentLoaded', function(e) {
 
     var githubUserImageLink = function(user) {
         return ['a', {'href': 'https://github.com/' + user.login},
-            ['img', {'src': user.avatar_url, 'title': user.login, 'class': 'small'}]
-        ].toXML();
+            ['img', {'src': user.avatar_url, 'title': user.login, 'class': 'small'}] ];
     };
 
-    var githubRepo = function(repo) {
-        return ['div',
-            ['a', {'href': repo.html_url}, repo.name],
-            ': ',
-            repo.watchers, ' stars, ',
-            repo.forks, ' forks, ',
-            repo.open_issues, ' issues'
-        ].toXML();
+    var githubUserImageLinks = function(users) {
+        return ['div'].concat(users.map(githubUserImageLink));
     };
 
-    document.querySelector('#github_user').addEventListener('click', function(e) {
-        e.preventDefault();
-        request('GET', e.target.href)
-            .then(function(xhr) { return JSON.parse(xhr.response); })
-            .then(githubUserImageLink)
-            .then(function(e) { document.querySelector('#github_user_result').appendChild(e); })
-            .catch(console.error);
-    });
+    var githubRepo = function(repos) {
+        return ['div'].concat(repos.map(function(repo) {
+            return ['div',
+                ['a', {'href': repo.html_url}, repo.name],
+                ': ',
+                repo.watchers, ' stars, ',
+                repo.forks, ' forks, ',
+                repo.open_issues, ' issues' ];
+        }));
+    };
 
-    document.querySelector('#github_following').addEventListener('click', function(e) {
-        e.preventDefault();
-        request('GET', e.target.href)
-            .then(function(xhr) { return JSON.parse(xhr.response); })
-            .then(function(following) { following
-                .map(githubUserImageLink)
-                .map(function(e) { document.querySelector('#github_following_result').appendChild(e); });
-            })
-            .catch(console.error);
-    });
-
-    document.querySelector('#github_followers').addEventListener('click', function(e) {
-        e.preventDefault();
-        request('GET', e.target.href)
-            .then(function(xhr) { return JSON.parse(xhr.response); })
-            .then(function(followers) { followers
-                .map(githubUserImageLink)
-                .map(function(e) { document.querySelector('#github_followers_result').appendChild(e); });
-            })
-            .catch(console.error);
-    });
-
-    document.querySelector('#github_repos').addEventListener('click', function(e) {
-        e.preventDefault();
-        request('GET', e.target.href)
-            .then(function(xhr) { return JSON.parse(xhr.response); })
-            .then(function(repos) { console.log(repos); return repos; })
-            .then(function(repos) { repos
-                .map(githubRepo)
-                .map(function(e) { document.querySelector('#github_repos_result').appendChild(e); });
-            })
-            .catch(console.error);
-    });
+    var github_me = new Link('#github_me', githubUserImageLink);
+    var github_following = new Link('#github_following', githubUserImageLinks);
+    var github_followers = new Link('#github_followers', githubUserImageLinks);
+    var github_repos = new Link('#github_repos', githubRepo);
 
     var facebookUserLink = function(user) {
         return ['img',
