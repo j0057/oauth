@@ -306,17 +306,17 @@ document.addEventListener('DOMContentLoaded', function(e) {
             });
     });
 
-    document.querySelector("#reddit_me").addEventListener("click", function(e) {
-        e.preventDefault();
-        request("GET", e.target.href)
-            .then(function(xhr) { return JSON.parse(xhr.response); })
-            .then(function(me) {
-                document.querySelector("#reddit_me_result").textContent
-                    = me.name + " ("
-                    + me.link_karma + " link karma, "
-                    + me.comment_karma + " comment karma)";
-            });
+    //
+    // reddit
+    //
+
+    var reddit_me = new Link('#reddit_me', function(me) {
+        return [ 'span', me.name, ' (', me.link_karma, ' link karma, ', me.comment_karma, ' comment karma)' ];
     });
+
+    //
+    // j0057.nl/todo
+    //
 
     document.querySelector("#j0057_todo_me").addEventListener("click", function(e) {
         e.preventDefault();
@@ -329,6 +329,10 @@ document.addEventListener('DOMContentLoaded', function(e) {
                 + '; To do: ' + me.tasks.todo;
             });
     });
+
+    //
+    // random links
+    //
 
     document.querySelector("#linkbag").addEventListener("click", function(e) {
         e.preventDefault();
