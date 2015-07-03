@@ -50,20 +50,18 @@
                 </ul>
             </div>
 
-            <!-- fuck facebook
             <div class="no-break">
                 <h2>Facebook</h2>
                 <ul>
                     <li>
-                        <a class="authorize" href="/oauth/facebook/init/">authorize</a>
+                        <a class="authorize" href="/oauth/facebook/init/?scope=public_profile,email,user_friends">authorize</a>
                     </li>
-                    <li>
-                        <a id="facebook_me" href="/oauth/facebook/api/me?fields=name,taggable_friends.fields(name)">https://graph.facebook.com/me?fields=name,friends.fields(name)</a>
-                        <div id="facebook_me_result"/>
+                    <li id="facebook_me">
+                        <a href="/oauth/facebook/api/me?fields=id,name,email,friends,taggable_friends">https://graph.facebook.com/me?fields=id,name,email,friends,taggable_friends</a>
+                        <div/>
                     </li>
                 </ul>
             </div>
-            -->
 
             <div class="no-break">
                 <h2>Live</h2>

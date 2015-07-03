@@ -142,20 +142,9 @@ document.addEventListener('DOMContentLoaded', function(e) {
     // facebook
     //
 
-    //var facebookUserLink = function(user) {
-    //    return ['img',
-    //        {'src': 'https://graph.facebook.com/' + user.id + '/picture', 'title': user.name }].toXML();
-    //};
-
-    //document.querySelector('#facebook_me').addEventListener('click', function(e) {
-    //    e.preventDefault();
-    //    request('GET', e.target.href)
-    //        .then(function(xhr) { return JSON.parse(xhr.response); })
-    //        .then(function(me) { me.friends.data
-    //                .map(facebookUserLink)
-    //                .map(function(e) { document.querySelector('#facebook_me_result').appendChild(e); });
-    //        });
-    //});
+    var facebook_me = new Link('#facebook_me', function(me) {
+        return [ 'span', me.name, ' <', me.email, '> (', me.friends.summary.total_count, ' friends)' ];
+    });
 
     //
     // windows live
