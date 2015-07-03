@@ -1,4 +1,6 @@
-NodeList.prototype.toArray = function() { return Array.prototype.slice.call(this); };
+NodeList.prototype.toArray = function() {
+    return Array.prototype.slice.call(this);
+};
 
 var request = function(method, url) {
     return new Promise(function(resolve, reject) {
