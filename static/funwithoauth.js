@@ -71,11 +71,24 @@ Link = Object.extend({
     },
     onLinkClick: function(e) {
         e.preventDefault();
-        request('GET', this.link.href)
-            .then(function(xhr) { return JSON.parse(xhr.response); }.bind(this))
-            .then(function(obj) { return this.format(obj); }.bind(this))
-            .then(function(elem) { this.result.empty().appendChild(elem.toXML()); }.bind(this))
+        var self = this;
+        request('GET', self.link.href)
+            .then(function(xhr) { return JSON.parse(xhr.response); })
+            .then(function(obj) { return self.format(obj); })
+            .then(function(elem) { self.result.empty().appendChild(elem.toXML()); })
             .catch(console.error);
+    },
+    parse: function(xhr) {
+        return JSON.parse(xhr.response);
+    }
+});
+
+XMLLink = Link.extend({
+    constructor: function(id, format) {
+        this.__super__.prototype.constructor.call(this, id, format);
+    },
+    parse: function(xhr) {
+        return xhr.responseXML;
     }
 });
 
