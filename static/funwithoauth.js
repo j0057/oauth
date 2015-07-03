@@ -39,6 +39,46 @@ Node.prototype.empty = function() {
     return this;
 };
 
+Function.prototype.extend = function(attrs) {
+    var ctor = attrs.constructor;
+    ctor.prototype = Object.create(this.prototype);
+    ctor.prototype.constructor = ctor;
+    ctor.prototype.__super__ = this;
+    for (var key in attrs) {
+        var staticFunc = /^_static_(.*)$/.exec(key)
+        if (typeof attrs[key] == "object") {
+            Object.defineProperty(ctor.prototype, key, attrs[key]);
+        }
+        else if (staticFunc) {
+            ctor[staticFunc[1]] = attrs[key];
+        }
+        else {
+            ctor.prototype[key] = attrs[key];
+        }
+    }
+    return ctor;
+};
+
+Link = Object.extend({
+    constructor: function(id, format) {
+        this.container = document.querySelector(id);
+        this.link = this.container.querySelector('a');
+        this.result = this.container.querySelector('div');
+
+        this.format = format;
+
+        this.link.addEventListener('click', this.onLinkClick.bind(this));
+    },
+    onLinkClick: function(e) {
+        e.preventDefault();
+        request('GET', this.link.href)
+            .then(function(xhr) { return JSON.parse(xhr.response); }.bind(this))
+            .then(function(obj) { return this.format(obj); }.bind(this))
+            .then(function(elem) { this.result.empty().appendChild(elem.toXML()); }.bind(this))
+            .catch(console.error);
+    }
+});
+
 document.addEventListener('DOMContentLoaded', function(e) {
     request('GET', '/oauth/session/check/')
         .then(function(xhr) {
