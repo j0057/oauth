@@ -268,19 +268,18 @@ document.addEventListener('DOMContentLoaded', function(e) {
                 .catch(console.error);
         }
     });
-    
-    document.querySelector("#linkedin_me").addEventListener("click", function(e) {
-        e.preventDefault();
-        request("GET", e.target.href)
-            .then(function(xhr) {
-                document.querySelector("#linkedin_me_result").textContent
-                    = xhr.responseXML.querySelector("person first-name").textContent
-                    + " " + xhr.responseXML.querySelector("person last-name").textContent
-                    + ", " + xhr.responseXML.querySelector("person headline").textContent;
-            })
-            .catch(console.error);
+
+    //
+    // linkedin
+    //
+ 
+    var linkedin_me = new XMLLink('#linkedin_me', function(xml) {
+        return [ 'span',
+            xml.querySelector('person first-name').textContent,
+            ' ', xml.querySelector('person last-name').textContent,
+            ', ', xml.querySelector('person headline').textContent ];
     });
-    
+
     document.querySelector("#linkedin_friends").addEventListener("click", function(e) {
         e.preventDefault();
         var linkedinConnection = function(person) {
