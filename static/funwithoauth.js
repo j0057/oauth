@@ -109,6 +109,10 @@ document.addEventListener('DOMContentLoaded', function(e) {
             window.scrollTo(0,0);
         });
 
+    //
+    // github
+    //
+
     var githubUserImageLink = function(user) {
         return ['a', {'href': 'https://github.com/' + user.login},
             ['img', {'src': user.avatar_url, 'title': user.login, 'class': 'small'}] ];
@@ -134,20 +138,28 @@ document.addEventListener('DOMContentLoaded', function(e) {
     var github_followers = new Link('#github_followers', githubUserImageLinks);
     var github_repos = new Link('#github_repos', githubRepo);
 
-    var facebookUserLink = function(user) {
-        return ['img',
-            {'src': 'https://graph.facebook.com/' + user.id + '/picture', 'title': user.name }].toXML();
-    };
+    //
+    // facebook
+    //
 
-    document.querySelector('#facebook_me').addEventListener('click', function(e) {
-        e.preventDefault();
-        request('GET', e.target.href)
-            .then(function(xhr) { return JSON.parse(xhr.response); })
-            .then(function(me) { me.friends.data
-                    .map(facebookUserLink)
-                    .map(function(e) { document.querySelector('#facebook_me_result').appendChild(e); });
-            });
-    });
+    //var facebookUserLink = function(user) {
+    //    return ['img',
+    //        {'src': 'https://graph.facebook.com/' + user.id + '/picture', 'title': user.name }].toXML();
+    //};
+
+    //document.querySelector('#facebook_me').addEventListener('click', function(e) {
+    //    e.preventDefault();
+    //    request('GET', e.target.href)
+    //        .then(function(xhr) { return JSON.parse(xhr.response); })
+    //        .then(function(me) { me.friends.data
+    //                .map(facebookUserLink)
+    //                .map(function(e) { document.querySelector('#facebook_me_result').appendChild(e); });
+    //        });
+    //});
+
+    //
+    // windows live
+    //
 
     document.querySelector("#live_me").addEventListener("click", function(e) {
         e.preventDefault();
