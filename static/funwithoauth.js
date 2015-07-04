@@ -201,6 +201,14 @@ document.addEventListener("DOMContentLoaded", function(e) {
     });
 
     //
+    // office 365
+    //
+
+    var office365_me = new Link("#office365_me", function(me) {
+        return ["span", me.displayName, " <", me.mail, ">"];
+    });
+
+    //
     // google
     //
  

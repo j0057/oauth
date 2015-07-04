@@ -30,7 +30,7 @@ class Office365Init(base.OauthInit, Office365):
 class Office365Code(base.OauthCode, Office365):
     def get_form(self, code):
         form = super(Office365Code, self).get_form(code)
-        form['resource'] = self.api_base_url
+        form['resource'] = self.api_base_uri
         return form
 
 class Office365Api(base.OauthApi, Office365):
