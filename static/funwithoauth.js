@@ -198,37 +198,17 @@ document.addEventListener('DOMContentLoaded', function(e) {
     var google_me = new Link('#google_me', function(me) {
         return ['span', me.name, ' <', me.email, '>'];
     });
-
-    var driveItem = function(item) {
-        return ["li",
-            ["img", {src: item.iconLink}],
-            " ",
-            item.mimeType != "application/vnd.google-apps.folder"
-                ? ["a", {href: item.alternateLink, "class": "document"}, item.title]
-                : "",
-            item.mimeType == "application/vnd.google-apps.folder"
-                ? ["a", {href: "/oauth/google/api/drive/v2/files?q=\"" + item.id + "\"+in+parents&fields=items(alternateLink,defaultOpenWithLink,iconLink,id,mimeType,thumbnailLink,title,downloadUrl,exportLinks,webContentLink)", "class": "folder"}, item.title]
-                : "",
-            item.mimeType == "application/vnd.google-apps.folder" ? ["ul"] : ""
-        ].toXML();
-    };
-
-    document.querySelector("#google_drive_browser").addEventListener("click", function(e) {
-        e.preventDefault();
-        if (e.target.className == "folder") { 
-            var ul = e.target.parentNode.querySelector('ul').empty();
-            request("GET", e.target.href)
-                .then(function(xhr) { return JSON.parse(xhr.response); })
-                .then(function(json) { 
-                    json.items
-                        .map(driveItem)
-                        .forEach(function(e) { ul.appendChild(e); });
-                })
-                .catch(console.error);
-        }
-        else if (e.target.className == "document") {
-            window.open(e.target.href)
-        }
+    var google_browser = new FileBrowser('#google_browser', function(items) {
+        return ["ul"].concat(items.map(function(item) {
+            return ["li",
+                ["img", {src: item.iconLink}],
+                " ",
+                item.mimeType == "application/vnd.google-apps.folder"
+                    ? ["a", {"class": "dir", href: "/oauth/google/api/drive/v2/files?q=\"" + item.id + "\"+in+parents&fields=items(alternateLink,defaultOpenWithLink,iconLink,id,mimeType,thumbnailLink,title,downloadUrl,exportLinks,webContentLink)"}, item.title]
+                    : ["a", {"class": "doc", href: item.alternateLink}, item.title],
+                item.mimeType == "application/vnd.google-apps.folder" ? ["ul"] : ""
+            ];
+        }));
     });
 
     //
