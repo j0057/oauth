@@ -290,16 +290,12 @@ document.addEventListener('DOMContentLoaded', function(e) {
     // j0057.nl/todo
     //
 
-    document.querySelector("#j0057_todo_me").addEventListener("click", function(e) {
-        e.preventDefault();
-        request("GET", e.target.href)
-            .then(function(xhr) { return JSON.parse(xhr.response); })
-            .then(function(me) { document.querySelector('#j0057_todo_me_result').textContent
-                = 'Username: ' + me.username
-                + '; Tasks: ' + me.tasks.total
-                + '; Done: ' + me.tasks.done
-                + '; To do: ' + me.tasks.todo;
-            });
+    var j0057_todo_me = new Link('#j0057_todo_me', function(me) {
+        return [ "span",
+                'Username: ', me.username
+                '; Tasks: ', me.tasks.total
+                '; Done: ', me.tasks.done
+                '; To do: ', me.tasks.todo ];
     });
 
     //
