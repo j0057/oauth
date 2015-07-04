@@ -258,30 +258,20 @@ document.addEventListener("DOMContentLoaded", function(e) {
         ];
     });
 
-    document.querySelector("#linkedin_friends").addEventListener("click", function(e) {
-        e.preventDefault();
-        var linkedinConnection = function(person) {
-            if (person.querySelector("id").textContent == "private")
-                return null;
-            var picture = person.querySelector("picture-url");
-            if (!picture)
-                return null;
-            var img = ["img", {
-                "src": picture.textContent,
-                "title": person.querySelector("first-name").textContent
-                    + " "
-                    + person.querySelector("last-name").textContent
-            }].toXML();
-        };
-        var div = document.querySelector("#linkedin_friends_result").empty();
-        request("GET", e.target.href)
-            .then(function(xhr) { xhr.responseXML
-                .querySelectorAll("connections person")
-                .toArray()
-                .map(linkedinConnection)
-                .filter(function(e) { return e != null; })
-                .forEach(function(e) { div.appendChild(e); })
-            });
+    var linked_connections = new XMLLink("#linkedin_connections", function(conns) {
+        return ["span"].concat(conns
+            .querySelectorAll("connections person")
+            .toArray()
+            .filter(function(p) { return p.querySelector("id") != "private"; })
+            .filter(function(p) { return p.querySelector("picture-url"); })
+            .map(function(p) {
+                return ["img", {
+                    src: p.querySelector("picture-url").textContent,
+                    title: person.querySelector("first-name").textContent
+                        + " "
+                        + person.querySelector("last-name").textContent
+                }];
+            }));
     });
 
     //
