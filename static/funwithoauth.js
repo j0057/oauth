@@ -60,21 +60,19 @@ Function.prototype.extend = function(attrs) {
 };
 
 Link = Object.extend({
-    constructor: function(id, format) {
+    constructor: function(id, view) {
         this.container = document.querySelector(id);
         this.link = this.container.querySelector("a");
-        this.result = this.container.querySelector("div");
-
-        this.format = format;
-
         this.link.addEventListener("click", this.onLinkClick.bind(this));
+        this.result = this.container.querySelector("div");
+        this.view = view;
     },
     onLinkClick: function(e) {
         e.preventDefault();
         var self = this;
         request("GET", self.link.href)
             .then(function(xhr) { return JSON.parse(xhr.response); })
-            .then(function(obj) { return self.format(obj); })
+            .then(function(obj) { return self.view(obj); })
             .then(function(elem) { self.result.empty().appendChild(elem.toXML()); })
             .catch(console.error);
     },
@@ -84,8 +82,8 @@ Link = Object.extend({
 });
 
 XMLLink = Link.extend({
-    constructor: function(id, format) {
-        this.__super__.prototype.constructor.call(this, id, format);
+    constructor: function(id, view) {
+        this.__super__.prototype.constructor.call(this, id, view);
     },
     parse: function(xhr) {
         return xhr.responseXML;
@@ -111,11 +109,15 @@ FileBrowser = Object.extend({
                 .catch(console.error);
         }
         else if (e.target.className = "doc") {
-            this.edit(e.target.href);
+            this.onEdit(e.target.href);
         }
     },
-    edit: function(url) {
+    onEdit: function(url) {
         window.open(url);
+    },
+    setOnEdit: function(fn) {
+        this.onEdit = fn;
+        return this;
     }
 });
 
@@ -140,16 +142,17 @@ document.addEventListener("DOMContentLoaded", function(e) {
     // github
     //
 
-    var githubUserImageLink = function(user) {
+    var github_me = new Link("#github_me", function(user) {
         return ["a", {"href": "https://github.com/" + user.login},
             ["img", {"src": user.avatar_url, "title": user.login, "class": "small"}]];
-    };
+    });
 
-    var githubUserImageLinks = function(users) {
-        return ["div"].concat(users.map(githubUserImageLink));
-    };
+    var github_following = new Link("#github_following", function(users) {
+        return ["div"].concat(users.map(github_me.view));
+    });
+    var github_followers = new Link("#github_followers", github_following.view);
 
-    var githubRepo = function(repos) {
+    var github_repos = new Link("#github_repos", function(repos) {
         return ["div"].concat(repos.map(function(repo) {
             return ["div",
                 ["a", {"href": repo.html_url}, repo.name],
@@ -158,12 +161,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
                 repo.forks, " forks, ",
                 repo.open_issues, " issues"];
         }));
-    };
-
-    var github_me = new Link("#github_me", githubUserImageLink);
-    var github_following = new Link("#github_following", githubUserImageLinks);
-    var github_followers = new Link("#github_followers", githubUserImageLinks);
-    var github_repos = new Link("#github_repos", githubRepo);
+    });
 
     //
     // facebook
