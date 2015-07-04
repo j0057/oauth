@@ -138,6 +138,13 @@ document.addEventListener("DOMContentLoaded", function(e) {
             window.scrollTo(0,0);
         });
 
+    document.querySelector("#linkbag").addEventListener("click", function(e) {
+        e.preventDefault();
+        if (e.target.href) { 
+            window.open(e.target.href);
+        }
+    });
+
     //
     // github
     //
@@ -295,16 +302,5 @@ document.addEventListener("DOMContentLoaded", function(e) {
             "; Done: ", me.tasks.done
             "; To do: ", me.tasks.todo
         ];
-    });
-
-    //
-    // random links
-    //
-
-    document.querySelector("#linkbag").addEventListener("click", function(e) {
-        e.preventDefault();
-        if (e.target.href) { 
-            window.open(e.target.href);
-        }
     });
 });
