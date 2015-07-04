@@ -16,7 +16,7 @@ Array.prototype.toXML = function() {
     if (this instanceof Array) {
         var result = document.createElement(this[0]);
         for (var i = 1; i < this.length; i++) {
-            if (typeof this[i] == 'object' && !(this[i] instanceof Array)) {
+            if (typeof this[i] == "object" && !(this[i] instanceof Array)) {
                 for (var a in this[i]) {
                     result.setAttribute(a, this[i][a]);
                 }
@@ -62,17 +62,17 @@ Function.prototype.extend = function(attrs) {
 Link = Object.extend({
     constructor: function(id, format) {
         this.container = document.querySelector(id);
-        this.link = this.container.querySelector('a');
-        this.result = this.container.querySelector('div');
+        this.link = this.container.querySelector("a");
+        this.result = this.container.querySelector("div");
 
         this.format = format;
 
-        this.link.addEventListener('click', this.onLinkClick.bind(this));
+        this.link.addEventListener("click", this.onLinkClick.bind(this));
     },
     onLinkClick: function(e) {
         e.preventDefault();
         var self = this;
-        request('GET', self.link.href)
+        request("GET", self.link.href)
             .then(function(xhr) { return JSON.parse(xhr.response); })
             .then(function(obj) { return self.format(obj); })
             .then(function(elem) { self.result.empty().appendChild(elem.toXML()); })
@@ -95,14 +95,14 @@ XMLLink = Link.extend({
 FileBrowser = Object.extend({
     constructor: function(id, view) {
         this.container = document.querySelector(id);
-        this.container.addEventListener('click', this.onClick.bind(this));
+        this.container.addEventListener("click", this.onClick.bind(this));
         this.view = view;
     },
     onClick: function(e) {
         e.preventDefault();
         if (e.target.className == "dir") {
-            var ul = e.target.parentNode.querySelector('ul').empty();
-            request('GET', e.target.href)
+            var ul = e.target.parentNode.querySelector("ul").empty();
+            request("GET", e.target.href)
                 .then(function(xhr) {
                     var doc = JSON.parse(xhr.response);
                     var elem = this.view(doc).toXML();
@@ -119,10 +119,10 @@ FileBrowser = Object.extend({
     }
 });
 
-document.addEventListener('DOMContentLoaded', function(e) {
-    request('GET', '/oauth/session/check/')
+document.addEventListener("DOMContentLoaded", function(e) {
+    request("GET", "/oauth/session/check/")
         .then(function(xhr) {
-            document.querySelector('#session_id').textContent = document.cookie;
+            document.querySelector("#session_id").textContent = document.cookie;
 
             document.querySelectorAll("a.authorize")
                 .toArray()
@@ -141,45 +141,49 @@ document.addEventListener('DOMContentLoaded', function(e) {
     //
 
     var githubUserImageLink = function(user) {
-        return ['a', {'href': 'https://github.com/' + user.login},
-            ['img', {'src': user.avatar_url, 'title': user.login, 'class': 'small'}] ];
+        return ["a", {"href": "https://github.com/" + user.login},
+            ["img", {"src": user.avatar_url, "title": user.login, "class": "small"}]];
     };
 
     var githubUserImageLinks = function(users) {
-        return ['div'].concat(users.map(githubUserImageLink));
+        return ["div"].concat(users.map(githubUserImageLink));
     };
 
     var githubRepo = function(repos) {
-        return ['div'].concat(repos.map(function(repo) {
-            return ['div',
-                ['a', {'href': repo.html_url}, repo.name],
-                ': ',
-                repo.watchers, ' stars, ',
-                repo.forks, ' forks, ',
-                repo.open_issues, ' issues' ];
+        return ["div"].concat(repos.map(function(repo) {
+            return ["div",
+                ["a", {"href": repo.html_url}, repo.name],
+                ": ",
+                repo.watchers, " stars, ",
+                repo.forks, " forks, ",
+                repo.open_issues, " issues"];
         }));
     };
 
-    var github_me = new Link('#github_me', githubUserImageLink);
-    var github_following = new Link('#github_following', githubUserImageLinks);
-    var github_followers = new Link('#github_followers', githubUserImageLinks);
-    var github_repos = new Link('#github_repos', githubRepo);
+    var github_me = new Link("#github_me", githubUserImageLink);
+    var github_following = new Link("#github_following", githubUserImageLinks);
+    var github_followers = new Link("#github_followers", githubUserImageLinks);
+    var github_repos = new Link("#github_repos", githubRepo);
 
     //
     // facebook
     //
 
-    var facebook_me = new Link('#facebook_me', function(me) {
-        return [ 'span', me.name, ' <', me.email, '> (', me.friends.summary.total_count, ' friends)' ];
+    var facebook_me = new Link("#facebook_me", function(me) {
+        return ["span",
+            me.name,
+            " <", me.email, ">",
+            " (", me.friends.summary.total_count, " friends)"];
     });
 
     //
     // windows live
     //
 
-    var live_me = Link('#live_me', function(me) {
-        return [ "span", me.name ];
+    var live_me = Link("#live_me", function(me) {
+        return ["span", me.name];
     });
+
     var live_browser = FileBrowser("#live_browser", function(items) {
         return ["ul"].concat(items.map(function(item) {
             return ["li",
@@ -195,10 +199,11 @@ document.addEventListener('DOMContentLoaded', function(e) {
     // google
     //
  
-    var google_me = new Link('#google_me', function(me) {
-        return ['span', me.name, ' <', me.email, '>'];
+    var google_me = new Link("#google_me", function(me) {
+        return ["span", me.name, " <", me.email, ">"];
     });
-    var google_browser = new FileBrowser('#google_browser', function(items) {
+
+    var google_browser = new FileBrowser("#google_browser", function(items) {
         return ["ul"].concat(items.map(function(item) {
             return ["li",
                 ["img", {src: item.iconLink}],
@@ -215,14 +220,15 @@ document.addEventListener('DOMContentLoaded', function(e) {
     // dropbox
     //
 
-    var dropbox_me = new Link('#dropbox_me', function(me) {
-        return ['span', me.display_name, ' <', me.email, '>']
+    var dropbox_me = new Link("#dropbox_me", function(me) {
+        return ["span", me.display_name, " <", me.email, ">"]
     });
+
     var dropbox_browser = new FileBrowser("#dropbox_browser", function(items) {
         return ["ul"].concat(items.map(function(item) {
             var path = item.path.split("/").map(encodeURIComponent).join("/");
             var name = item.path.split("/").pop();
-            return [ "li",
+            return ["li",
                 ["img", {src: "/oauth/dropbox/" + item.icon + ".gif"}],
                 " ",
                 item.is_dir
@@ -232,6 +238,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
             ];
         }));
     });
+
     dropbox_browser.edit = function(url) {
         request("GET", e.target.href)
             .then(function(xhr) { return JSON.parse(xhr.response); })
@@ -243,11 +250,12 @@ document.addEventListener('DOMContentLoaded', function(e) {
     // linkedin
     //
  
-    var linkedin_me = new XMLLink('#linkedin_me', function(xml) {
-        return [ 'span',
-            xml.querySelector('person first-name').textContent,
-            ' ', xml.querySelector('person last-name').textContent,
-            ', ', xml.querySelector('person headline').textContent ];
+    var linkedin_me = new XMLLink("#linkedin_me", function(xml) {
+        return ["span",
+            xml.querySelector("person first-name").textContent,
+            " ", xml.querySelector("person last-name").textContent,
+            ", ", xml.querySelector("person headline").textContent
+        ];
     });
 
     document.querySelector("#linkedin_friends").addEventListener("click", function(e) {
@@ -280,22 +288,25 @@ document.addEventListener('DOMContentLoaded', function(e) {
     // reddit
     //
 
-    var reddit_me = new Link('#reddit_me', function(me) {
-        return [ 'span', me.name, 
-            ' (', me.link_karma, ' link karma', 
-            ', ', me.comment_karma, ' comment karma)' ];
+    var reddit_me = new Link("#reddit_me", function(me) {
+        return ["span",
+            me.name,
+            " (", me.link_karma, " link karma",
+            ", ", me.comment_karma, " comment karma)"
+        ];
     });
 
     //
     // j0057.nl/todo
     //
 
-    var j0057_todo_me = new Link('#j0057_todo_me', function(me) {
-        return [ "span",
-                'Username: ', me.username
-                '; Tasks: ', me.tasks.total
-                '; Done: ', me.tasks.done
-                '; To do: ', me.tasks.todo ];
+    var j0057_todo_me = new Link("#j0057_todo_me", function(me) {
+        return ["span",
+            "Username: ", me.username
+            "; Tasks: ", me.tasks.total
+            "; Done: ", me.tasks.done
+            "; To do: ", me.tasks.todo
+        ];
     });
 
     //
