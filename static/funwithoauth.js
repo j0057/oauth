@@ -281,7 +281,9 @@ document.addEventListener('DOMContentLoaded', function(e) {
     //
 
     var reddit_me = new Link('#reddit_me', function(me) {
-        return [ 'span', me.name, ' (', me.link_karma, ' link karma, ', me.comment_karma, ' comment karma)' ];
+        return [ 'span', me.name, 
+            ' (', me.link_karma, ' link karma', 
+            ', ', me.comment_karma, ' comment karma)' ];
     });
 
     //
