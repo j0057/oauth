@@ -73,8 +73,7 @@ Link = Object.extend({
         request("GET", self.link.href)
             .then(function(xhr) { return JSON.parse(xhr.response); })
             .then(function(obj) { return self.view(obj); })
-            .then(function(elem) { self.result.empty().appendChild(elem.toXML()); })
-            .catch(console.error);
+            .then(function(elem) { self.result.empty().appendChild(elem.toXML()); });
     },
     parse: function(xhr) {
         return JSON.parse(xhr.response);
@@ -105,8 +104,7 @@ FileBrowser = Object.extend({
                     var doc = JSON.parse(xhr.response);
                     var elem = this.view(doc).toXML();
                     ul.parentNode.replaceChild(elem, ul);
-                }.bind(this))
-                .catch(console.error);
+                }.bind(this));
         }
         else if (e.target.className = "doc") {
             this.onEdit(e.target.href);
@@ -185,12 +183,12 @@ document.addEventListener("DOMContentLoaded", function(e) {
     // windows live
     //
 
-    var live_me = Link("#live_me", function(me) {
+    var live_me = new Link("#live_me", function(me) {
         return ["span", me.name];
     });
 
-    var live_browser = FileBrowser("#live_browser", function(items) {
-        return ["ul"].concat(items.map(function(item) {
+    var live_browser = new FileBrowser("#live_browser", function(items) {
+        return ["ul"].concat(items.data.map(function(item) {
             return ["li",
                 item.type == "folder" || item.type == "album"
                     ? ["a", {"class": "dir", "href": "/oauth/live/api/" + item.id + "/files"}, item.name]
@@ -256,7 +254,6 @@ document.addEventListener("DOMContentLoaded", function(e) {
         request("GET", e.target.href)
             .then(function(xhr) { return JSON.parse(xhr.response); })
             .then(function(media) { window.open(media.url); })
-            .catch(console.error);
     };
 
     //
@@ -305,9 +302,9 @@ document.addEventListener("DOMContentLoaded", function(e) {
 
     var j0057_todo_me = new Link("#j0057_todo_me", function(me) {
         return ["span",
-            "Username: ", me.username
-            "; Tasks: ", me.tasks.total
-            "; Done: ", me.tasks.done
+            "Username: ", me.username,
+            "; Tasks: ", me.tasks.total,
+            "; Done: ", me.tasks.done,
             "; To do: ", me.tasks.todo
         ];
     });
