@@ -158,16 +158,19 @@ document.addEventListener('DOMContentLoaded', function(e) {
             .catch(console.error);
     });
 
+    var skyDriveItem = function(item) {
+        return ["li",
+            item.type == "folder" || item.type == "album" 
+                ? ["a", {"href": "/oauth/live/api/" + item.id + "/files", "class": "folder"}, item.name]
+                : "",
+            item.type == "file" || item.type == "photo"
+                ? ["a", {"href": item.link, "class": "document"}, item.name]
+                : "",
+            item.type == "folder" || item.type == "album" ? ["ul"] : ""
+        ].toXML();
+    };
+
     document.querySelector("#live_skydrive_browser").addEventListener("click", function(e) {
-        var isFolder = function(item) { return item.type == "folder" || item.type == "album"; }
-        var isDocument = function(item) { return item.type == "file" || item.type == "photo"; }
-        var listItem = function(item) {
-            return ["li",
-                isFolder(item) ? ["a", {"href": "/oauth/live/api/" + item.id + "/files", "class": "folder"}, item.name] : "",
-                isDocument(item) ? ["a", {"href": item.link, "class": "document"}, item.name] : "",
-                isFolder(item) ? ["ul"] : ""
-            ].toXML();
-        };
         e.preventDefault();
         if (e.target.className == "folder") {
             var ul = e.target.parentNode.querySelector('ul').empty();
@@ -191,17 +194,22 @@ document.addEventListener('DOMContentLoaded', function(e) {
         return ['span', me.name, ' <', me.email, '>'];
     });
 
+    var driveItem = function(item) {
+        return ["li",
+            ["img", {src: item.iconLink}],
+            " ",
+            item.mimeType != "application/vnd.google-apps.folder"
+                ? ["a", {href: item.alternateLink, "class": "document"}, item.title]
+                : "",
+            item.mimeType == "application/vnd.google-apps.folder"
+                ? ["a", {href: "/oauth/google/api/drive/v2/files?q=\"" + item.id + "\"+in+parents&fields=items(alternateLink,defaultOpenWithLink,iconLink,id,mimeType,thumbnailLink,title,downloadUrl,exportLinks,webContentLink)", "class": "folder"}, item.title]
+                : "",
+            item.mimeType == "application/vnd.google-apps.folder" ? ["ul"] : ""
+        ].toXML();
+    };
+
     document.querySelector("#google_drive_browser").addEventListener("click", function(e) {
         e.preventDefault();
-        var driveItem = function(item) {
-            return ["li",
-                ["img", {src: item.iconLink}],
-                " ",
-                item.mimeType != "application/vnd.google-apps.folder" ? ["a", {href: item.alternateLink, "class": "document"}, item.title] : "",
-                item.mimeType == "application/vnd.google-apps.folder" ? ["a", {href: "/oauth/google/api/drive/v2/files?q=\"" + item.id + "\"+in+parents&fields=items(alternateLink,defaultOpenWithLink,iconLink,id,mimeType,thumbnailLink,title,downloadUrl,exportLinks,webContentLink)", "class": "folder"}, item.title] : "",
-                item.mimeType == "application/vnd.google-apps.folder" ? ["ul"] : ""
-            ].toXML();
-        };
         if (e.target.className == "folder") { 
             var ul = e.target.parentNode.querySelector('ul').empty();
             request("GET", e.target.href)
@@ -226,20 +234,21 @@ document.addEventListener('DOMContentLoaded', function(e) {
         return ['span', me.display_name, ' <', me.email, '>']
     });
 
+    var dropboxItem = function(item) {
+        var path = item.path.split("/").map(encodeURIComponent).join("/");
+        var name = item.path.split("/").pop();
+        return [ "li",
+            ["img", {src: "/oauth/dropbox/" + item.icon + ".gif"}],
+            " ",
+            item.is_dir
+                ? ["a", {"href": "/oauth/dropbox/api/1/metadata/dropbox" + path, "class": "folder"}, name]
+                : ["a", {"href": "/oauth/dropbox/api/1/media/dropbox" + path, "class": "document"}, name],
+            item.is_dir ? ["ul"] : ""
+        ].toXML();
+    };
+
     document.querySelector("#dropbox_browser").addEventListener("click", function(e) {
         e.preventDefault();
-        var dropboxItem = function(item) {
-            var path = item.path.split("/").map(encodeURIComponent).join("/");
-            var name = item.path.split("/").pop();
-            return [ "li",
-                ["img", {src: "/oauth/dropbox/" + item.icon + ".gif"}],
-                " ",
-                item.is_dir
-                    ? ["a", {"href": "/oauth/dropbox/api/1/metadata/dropbox" + path, "class": "folder"}, name]
-                    : ["a", {"href": "/oauth/dropbox/api/1/media/dropbox" + path, "class": "document"}, name],
-                item.is_dir ? ["ul"] : ""
-            ].toXML();
-        };
         if (e.target.className == "folder") {
             var ul = e.target.parentNode.querySelector("ul").empty();
             request("GET", e.target.href)
