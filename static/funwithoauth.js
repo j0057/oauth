@@ -177,40 +177,18 @@ document.addEventListener('DOMContentLoaded', function(e) {
     // windows live
     //
 
-    document.querySelector("#live_me").addEventListener("click", function(e) {
-        e.preventDefault();
-        request('GET', e.target.href)
-            .then(function(xhr) { return JSON.parse(xhr.response); })
-            .then(function(me) { document.querySelector("#live_me_result").textContent = me.name; })
-            .catch(console.error);
+    var live_me = Link('#live_me', function(me) {
+        return [ "span", me.name ];
     });
-
-    var skyDriveItem = function(item) {
-        return ["li",
-            item.type == "folder" || item.type == "album" 
-                ? ["a", {"href": "/oauth/live/api/" + item.id + "/files", "class": "folder"}, item.name]
-                : "",
-            item.type == "file" || item.type == "photo"
-                ? ["a", {"href": item.link, "class": "document"}, item.name]
-                : "",
-            item.type == "folder" || item.type == "album" ? ["ul"] : ""
-        ].toXML();
-    };
-
-    document.querySelector("#live_skydrive_browser").addEventListener("click", function(e) {
-        e.preventDefault();
-        if (e.target.className == "folder") {
-            var ul = e.target.parentNode.querySelector('ul').empty();
-            request('GET', e.target.href)
-                .then(function(xhr) { return JSON.parse(xhr.response); })
-                .then(function(items) { items.data
-                    .map(listItem)
-                    .map(function(li) { ul.appendChild(li); });
-                });
-        }
-        else if (e.target.className = "document") {
-            window.open(e.target.href)
-        }
+    var live_browser = FileBrowser("#live_browser", function(items) {
+        return ["ul"].concat(items.map(function(item) {
+            return ["li",
+                item.type == "folder" || item.type == "album"
+                    ? ["a", {"class": "dir", "href": "/oauth/live/api/" + item.id + "/files"}, item.name]
+                    : ["a", {"class": "doc", "href": item.link}, item.name],
+                item.type == "folder" || item.type == "album" ? ["ul"] : ""
+            ];
+        }));
     });
 
     //
