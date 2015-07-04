@@ -92,6 +92,33 @@ XMLLink = Link.extend({
     }
 });
 
+FileBrowser = Object.extend({
+    constructor: function(id, view) {
+        this.container = document.querySelector(id);
+        this.container.addEventListener('click', this.onClick.bind(this));
+        this.view = view;
+    },
+    onClick: function(e) {
+        e.preventDefault();
+        if (e.target.className == "dir") {
+            var ul = e.target.parentNode.querySelector('ul').empty();
+            request('GET', e.target.href)
+                .then(function(xhr) {
+                    var doc = JSON.parse(xhr.response);
+                    var elem = this.view(doc).toXML();
+                    ul.parentNode.replaceChild(elem, ul);
+                }.bind(this))
+                .catch(console.error);
+        }
+        else if (e.target.className = "doc") {
+            this.edit(e.target.href);
+        }
+    },
+    edit: function(url) {
+        window.open(url);
+    }
+});
+
 document.addEventListener('DOMContentLoaded', function(e) {
     request('GET', '/oauth/session/check/')
         .then(function(xhr) {
