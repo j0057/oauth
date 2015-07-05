@@ -98,7 +98,7 @@ FileBrowser = Object.extend({
     onClick: function(e) {
         e.preventDefault();
         if (e.target.className == "dir") {
-            var ul = e.target.parentNode.querySelector("ul").empty();
+            var ul = e.target.parentNode.querySelector("ul");
             request("GET", e.target.href)
                 .then(function(xhr) {
                     var doc = JSON.parse(xhr.response);
@@ -227,8 +227,8 @@ document.addEventListener("DOMContentLoaded", function(e) {
         return ["span", me.name, " <", me.email, ">"];
     });
 
-    var google_browser = new FileBrowser("#google_browser", function(items) {
-        return ["ul"].concat(items.map(function(item) {
+    var google_browser = new FileBrowser("#google_browser", function(drive) {
+        return ["ul"].concat(drive.items.map(function(item) {
             return ["li",
                 ["img", {src: item.iconLink}],
                 " ",
@@ -248,26 +248,25 @@ document.addEventListener("DOMContentLoaded", function(e) {
         return ["span", me.display_name, " <", me.email, ">"]
     });
 
-    var dropbox_browser = new FileBrowser("#dropbox_browser", function(items) {
-        return ["ul"].concat(items.map(function(item) {
+    var dropbox_browser = new FileBrowser("#dropbox_browser", function(dropbox) {
+        return ["ul"].concat(dropbox.contents.map(function(item) {
             var path = item.path.split("/").map(encodeURIComponent).join("/");
             var name = item.path.split("/").pop();
             return ["li",
                 ["img", {src: "/oauth/dropbox/" + item.icon + ".gif"}],
                 " ",
                 item.is_dir
-                    ? ["a", {"href": "/oauth/dropbox/api/1/metadata/dropbox" + path, "class": "folder"}, name]
-                    : ["a", {"href": "/oauth/dropbox/api/1/media/dropbox" + path, "class": "document"}, name],
+                    ? ["a", {"class": "dir", "href": "/oauth/dropbox/api/1/metadata/dropbox" + path}, name]
+                    : ["a", {"class": "doc", "href": "/oauth/dropbox/api/1/media/dropbox" + path}, name],
                 item.is_dir ? ["ul"] : ""
             ];
         }));
-    });
-
-    dropbox_browser.edit = function(url) {
-        request("GET", e.target.href)
+    })
+    .setOnEdit(function(url) {
+        request("GET", url)
             .then(function(xhr) { return JSON.parse(xhr.response); })
             .then(function(media) { window.open(media.url); })
-    };
+    });
 
     //
     // linkedin
