@@ -34,4 +34,4 @@ class Office365Code(base.OauthCode, Office365):
         return form
 
 class Office365Api(base.OauthApi, Office365):
-    pass
+    api_base_uri = Office365.api_base_uri + 'v1.0/'
