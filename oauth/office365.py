@@ -24,7 +24,7 @@ class Office365Init(base.OauthInit, Office365):
     def get_params(self, scope, nonce):
         params = super(Office365Init, self).get_params(scope, nonce)
         params['prompt'] = 'consent'
-        params['api_version'] = '1.0'
+        params['api_version'] = 'v1.0'
         return params
 
 class Office365Code(base.OauthCode, Office365):

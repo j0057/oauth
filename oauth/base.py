@@ -100,7 +100,9 @@ class OauthCode(xhttp.Resource):
                  'authuser?': '.*',
                  'prompt?': '.*',
                  'session_state?': '.*',
-                 'num_sessions?': '.*' })
+                 'num_sessions?': '.*',
+                 'admin_consent?': r'True|False' # for office365..
+    })
     @xhttp.cookie({ 'session_id': '^(.+)$' })
     @xhttp.session('session_id', SESSIONS)
     def GET(self, request):

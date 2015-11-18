@@ -209,10 +209,10 @@ document.addEventListener("DOMContentLoaded", function(e) {
     var office365_browser = new FileBrowser("#office365_browser", function(files) {
         return ["ul"].concat(files.value.map(function(item) {
             return ["li",
-                item.type == "Folder"
-                    ? ["a", {"class": "dir", href: "/oauth/office365/api/me/files/" + item.id + "/children"}, item.name]
+                item.folder
+                    ? ["a", {"class": "dir", href: "/oauth/office365/api/me/drive/items/" + item.id + "/children"}, item.name]
                     : ["a", {"class": "doc", href: item.webUrl}, item.name],
-                item.type == "Folder"
+                item.folder
                     ? ["ul"]
                     : ""
             ];

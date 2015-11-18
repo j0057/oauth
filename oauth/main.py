@@ -73,4 +73,4 @@ app = xhttp.catcher(app)
 app = xhttp.xhttp_app(app)
 
 if __name__ == '__main__':
-    xhttp.run_server(app)
+    xhttp.run_server(app, port=8000)
