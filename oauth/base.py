@@ -42,7 +42,10 @@ class OauthInit(xhttp.Resource):
 
     @xhttp.cookie({ 'session_id': '^(.+)$' })
     @xhttp.session('session_id', SESSIONS)
-    @xhttp.get({ 'scope?': '.+', 'session_id*': '.*' })
+    @xhttp.get({
+        'scope?'     : '.+',
+        'session_id*': '.*'
+    })
     def GET(self, request):
         request['x-session'][self.key_fmt.format('nonce')] = nonce = random()
         scope = self.get_scope(request)
@@ -95,13 +98,14 @@ class OauthCode(xhttp.Resource):
                 'x-detail': "Don't know how to handle content type {0}".format(content_type) })
         return access_token
 
-    @xhttp.get({ 'code': r'^.+$',
-                 'state': r'^[-_0-9a-zA-Z]+$',
-                 'authuser?': '.*',
-                 'prompt?': '.*',
-                 'session_state?': '.*',
-                 'num_sessions?': '.*',
-                 'admin_consent?': r'True|False' # for office365..
+    @xhttp.get({
+        'code'          : r'^.+$',
+        'state'         : r'^[-_0-9a-zA-Z]+$',
+        'authuser?'     : '.*',
+        'prompt?'       : '.*',
+        'session_state?': '.*',
+        'num_sessions?' : '.*',
+        'admin_consent?': r'True|False' # XXX: for office365, this should be extensible somehow
     })
     @xhttp.cookie({ 'session_id': '^(.+)$' })
     @xhttp.session('session_id', SESSIONS)
