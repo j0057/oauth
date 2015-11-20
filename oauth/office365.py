@@ -21,9 +21,12 @@ class Office365(object):
     redirect_uri  = 'https://{0}/oauth/index.xhtml'.format(config.SERVER_HOSTNAME)
 
 class Office365Init(base.OauthInit, Office365):
-    def get_params(self, scope, nonce):
-        params = super(Office365Init, self).get_params(scope, nonce)
-        params['prompt'] = 'consent'
+    # see https://msdn.microsoft.com/en-us/library/azure/dn645542.aspx
+    def get_params(self, request, scope, nonce):
+        params = super(Office365Init, self).get_params(request, scope, nonce)
+        # TODO: handle domain_hint and login_hint
+        if request['x-get']['prompt']:
+            params['prompt'] = request['x-get']['prompt']
         params['api_version'] = 'v1.0'
         return params
 

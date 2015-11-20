@@ -32,7 +32,7 @@ class OauthInit(xhttp.Resource):
     def get_scope(self, request):
         return request['x-get']['scope'] or ''
 
-    def get_params(self, scope, nonce):
+    def get_params(self, request, scope, nonce):
         return {
             'client_id': self.client_id,
             'redirect_uri': self.callback_uri,
@@ -44,12 +44,13 @@ class OauthInit(xhttp.Resource):
     @xhttp.session('session_id', SESSIONS)
     @xhttp.get({
         'scope?'     : '.+',
-        'session_id*': '.*'
+        'session_id*': '.*',
+        'prompt?'    : 'login|consent|admin_consent' # XXX: should be only for office365
     })
     def GET(self, request):
         request['x-session'][self.key_fmt.format('nonce')] = nonce = random()
         scope = self.get_scope(request)
-        params = self.get_params(scope, nonce)
+        params = self.get_params(request, scope, nonce)
         authorize_uri = self.authorize_uri + '?' + urllib.urlencode(params)
         return {
             'x-status': xhttp.status.SEE_OTHER,
