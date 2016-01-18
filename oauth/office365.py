@@ -20,6 +20,8 @@ class Office365(object):
     callback_uri  = 'https://{0}/oauth/office365/code/'.format(config.SERVER_HOSTNAME)
     redirect_uri  = 'https://{0}/oauth/index.xhtml'.format(config.SERVER_HOSTNAME)
 
+    api_version   = 'v1.0'
+
 class Office365Init(base.OauthInit, Office365):
     # see https://msdn.microsoft.com/en-us/library/azure/dn645542.aspx
     def get_params(self, request, scope, nonce):
@@ -27,7 +29,7 @@ class Office365Init(base.OauthInit, Office365):
         # TODO: handle domain_hint and login_hint
         if request['x-get']['prompt']:
             params['prompt'] = request['x-get']['prompt']
-        params['api_version'] = 'v1.0'
+        params['api_version'] = Office365.api_version
         return params
 
 class Office365Code(base.OauthCode, Office365):
@@ -37,4 +39,4 @@ class Office365Code(base.OauthCode, Office365):
         return form
 
 class Office365Api(base.OauthApi, Office365):
-    api_base_uri = Office365.api_base_uri + 'v1.0/'
+    api_base_uri = Office365.api_base_uri + Office365.api_version + '/'
